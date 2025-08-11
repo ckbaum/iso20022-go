@@ -162,6 +162,10 @@ type Admi00700101Document struct {
 	ReceiptAcknowledgement ReceiptAcknowledgementV01 `xml:"RctAck"`
 }
 
+// Admi00200101Document represents the ADMI.002.001.01 Message Rejection message.
+// This administrative message is used to reject a previously received message when it cannot be processed,
+// providing detailed information about the rejection reason, error location, and additional diagnostic data.
+
 // Admi99800102Document represents the ADMI.998.001.02 Administration Proprietary Message.
 // This administrative message allows transmission of proprietary or custom administrative information
 // between financial institutions that falls outside standard ISO 20022 message types.
@@ -1373,18 +1377,18 @@ type FIToFIPaymentStatusReportV10 struct {
 
 // PaymentReturnV10 - pacs.004.001.10
 type PaymentReturnV10 struct {
-	GroupHeader       GroupHeader90              `xml:"GrpHdr"`
-	OriginalGroupInfo OriginalGroupInfo29        `xml:"OrgnlGrpInf"`
-	TransactionInfo   []PaymentTransactionInfo51 `xml:"TxInf,omitempty"`
-	SupplementaryData []SupplementaryData        `xml:"SplmtryData,omitempty"`
+	GroupHeader       GroupHeader90           `xml:"GrpHdr"`
+	OriginalGroupInfo *OriginalGroupHeader18  `xml:"OrgnlGrpInf,omitempty"`
+	TransactionInfo   []PaymentTransaction118 `xml:"TxInf,omitempty"`
+	SupplementaryData []SupplementaryData1    `xml:"SplmtryData,omitempty"`
 }
 
 // FIToFIPaymentStatusRequestV03 - pacs.028.001.03
 type FIToFIPaymentStatusRequestV03 struct {
-	GroupHeader       GroupHeader91              `xml:"GrpHdr"`
-	OriginalGroupInfo *OriginalGroupHeader17     `xml:"OrgnlGrpInf,omitempty"`
-	TransactionInfo   []PaymentTransactionInfo50 `xml:"TxInf,omitempty"`
-	SupplementaryData []SupplementaryData        `xml:"SplmtryData,omitempty"`
+	GroupHeader       GroupHeader91                 `xml:"GrpHdr"`
+	OriginalGroupInfo []OriginalGroupInformation27  `xml:"OrgnlGrpInf,omitempty"`
+	TransactionInfo   []PaymentTransaction113       `xml:"TxInf,omitempty"`
+	SupplementaryData []SupplementaryData1          `xml:"SplmtryData,omitempty"`
 }
 
 // BankToCustomerAccountReportV08 - camt.052.001.08
@@ -1796,6 +1800,22 @@ type OriginalGroupInfo29 struct {
 	ReturnReason                 *PaymentReturnReason5 `xml:"RtrRsn,omitempty"`
 }
 
+// OriginalGroupInformation27 - for pacs.028.001.03 (exact XSD match)
+type OriginalGroupInformation27 struct {
+	OriginalMessageID            string     `xml:"OrgnlMsgId"`
+	OriginalMessageNameID        string     `xml:"OrgnlMsgNmId"`
+	OriginalCreatedDateTime      *time.Time `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalNumberOfTransactions *string    `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum           *float64   `xml:"OrgnlCtrlSum,omitempty"`
+}
+
+// OriginalGroupInformation29 - for pacs.028.001.03 PaymentTransaction113 (exact XSD match)
+type OriginalGroupInformation29 struct {
+	OriginalMessageID       string     `xml:"OrgnlMsgId"`
+	OriginalMessageNameID   string     `xml:"OrgnlMsgNmId"`
+	OriginalCreatedDateTime *time.Time `xml:"OrgnlCreDtTm,omitempty"`
+}
+
 // PaymentTransaction110 - for pacs.002.001.10 (exact XSD match)
 type PaymentTransaction110 struct {
 	StatusID                         *string                                       `xml:"StsId,omitempty"`
@@ -1815,6 +1835,91 @@ type PaymentTransaction110 struct {
 	InstructedAgent                  *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
 	OriginalTransactionReference     *OriginalTransactionReference28               `xml:"OrgnlTxRef,omitempty"`
 	SupplementaryData                []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
+}
+
+// PaymentTransaction113 - for pacs.028.001.03 (exact XSD match)
+type PaymentTransaction113 struct {
+	StatusRequestID              *string                                       `xml:"StsReqId,omitempty"`
+	OriginalGroupInfo            *OriginalGroupInformation29                   `xml:"OrgnlGrpInf,omitempty"`
+	OriginalInstructionID        *string                                       `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID           *string                                       `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalTransactionID        *string                                       `xml:"OrgnlTxId,omitempty"`
+	OriginalUETR                 *string                                       `xml:"OrgnlUETR,omitempty"`
+	AcceptanceDateTime           *time.Time                                    `xml:"AccptncDtTm,omitempty"`
+	ClearingSystemReference      *string                                       `xml:"ClrSysRef,omitempty"`
+	InstructingAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
+	InstructedAgent              *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
+	OriginalTransactionReference *OriginalTransactionReference28               `xml:"OrgnlTxRef,omitempty"`
+	SupplementaryData            []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
+}
+
+// OriginalGroupHeader18 - for pacs.004.001.10 (exact XSD match)
+type OriginalGroupHeader18 struct {
+	OriginalMessageID       string                  `xml:"OrgnlMsgId"`
+	OriginalMessageNameID   string                  `xml:"OrgnlMsgNmId"`
+	OriginalCreatedDateTime *time.Time              `xml:"OrgnlCreDtTm,omitempty"`
+	ReturnReasonInfo        []PaymentReturnReason6  `xml:"RtrRsnInf,omitempty"`
+}
+
+// PaymentReturnReason6 - for pacs.004.001.10 (exact XSD match)
+type PaymentReturnReason6 struct {
+	Originator            *PartyIdentification135 `xml:"Orgtr,omitempty"`
+	Reason                *ReturnReason5          `xml:"Rsn,omitempty"`
+	AdditionalInformation []string                `xml:"AddtlInf,omitempty"`
+}
+
+// PaymentTransaction118 - for pacs.004.001.10 (exact XSD match)
+type PaymentTransaction118 struct {
+	ReturnID                           *string                                       `xml:"RtrId,omitempty"`
+	OriginalGroupInfo                  *OriginalGroupInformation29                   `xml:"OrgnlGrpInf,omitempty"`
+	OriginalInstructionID              *string                                       `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID                 *string                                       `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalTransactionID              *string                                       `xml:"OrgnlTxId,omitempty"`
+	OriginalUETR                       *string                                       `xml:"OrgnlUETR,omitempty"`
+	OriginalClearingSystemReference    *string                                       `xml:"OrgnlClrSysRef,omitempty"`
+	OriginalInterbankSettlementAmount  *ActiveOrHistoricCurrencyAndAmount            `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
+	OriginalInterbankSettlementDate    *string                                       `xml:"OrgnlIntrBkSttlmDt,omitempty"`
+	ReturnedInterbankSettlementAmount  ActiveCurrencyAndAmount                       `xml:"RtrdIntrBkSttlmAmt"`
+	InterbankSettlementDate            *string                                       `xml:"IntrBkSttlmDt,omitempty"`
+	SettlementPriority                 *string                                       `xml:"SttlmPrty,omitempty"`
+	SettlementTimeIndication           *SettlementDateTimeIndication1                `xml:"SttlmTmIndctn,omitempty"`
+	ReturnedInstructedAmount           *ActiveOrHistoricCurrencyAndAmount            `xml:"RtrdInstdAmt,omitempty"`
+	ExchangeRate                       *float64                                      `xml:"XchgRate,omitempty"`
+	CompensationAmount                 *ActiveOrHistoricCurrencyAndAmount            `xml:"CompstnAmt,omitempty"`
+	ChargeBearer                       *string                                       `xml:"ChrgBr,omitempty"`
+	ChargesInfo                        []Charges7                                    `xml:"ChrgsInf,omitempty"`
+	ClearingSystemReference            *string                                       `xml:"ClrSysRef,omitempty"`
+	InstructingAgent                   *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
+	InstructedAgent                    *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
+	ReturnReasonInfo                   []PaymentReturnReason6                        `xml:"RtrRsnInf,omitempty"`
+	OriginalTransactionReference       *OriginalTransactionReference32               `xml:"OrgnlTxRef,omitempty"`
+	SupplementaryData                  []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
+}
+
+// OriginalTransactionReference32 - for pacs.004.001.10 (exact XSD match)
+type OriginalTransactionReference32 struct {
+	InterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount            `xml:"IntrBkSttlmAmt,omitempty"`
+	Amount                    *AmountType4                                  `xml:"Amt,omitempty"`
+	InterbankSettlementDate   *string                                       `xml:"IntrBkSttlmDt,omitempty"`
+	RequestedCollectionDate   *string                                       `xml:"ReqdColltnDt,omitempty"`
+	RequestedExecutionDate    *DateAndDateTime2                             `xml:"ReqdExctnDt,omitempty"`
+	CreditorSchemeID          *PartyIdentification135                       `xml:"CdtrSchmeId,omitempty"`
+	SettlementInfo            *SettlementInstruction7                       `xml:"SttlmInf,omitempty"`
+	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
+	PaymentMethod             *string                                       `xml:"PmtMtd,omitempty"`
+	MandateRelatedInfo        *MandateRelatedInfo14                         `xml:"MndtRltdInf,omitempty"`
+	RemittanceInfo            *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
+	UltimateDebtor            *Party40                                      `xml:"UltmtDbtr,omitempty"`
+	Debtor                    *Party40                                      `xml:"Dbtr,omitempty"`
+	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
+	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
+	DebtorAgentAccount        *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
+	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+	CreditorAgentAccount      *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
+	Creditor                  *Party40                                      `xml:"Cdtr,omitempty"`
+	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
+	UltimateCreditor          *Party40                                      `xml:"UltmtCdtr,omitempty"`
+	Purpose                   *Purpose2                                     `xml:"Purp,omitempty"`
 }
 
 // Additional base types
