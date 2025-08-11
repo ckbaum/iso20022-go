@@ -15,7 +15,7 @@ import (
 // containing all necessary payment details including debtor/creditor information and settlement instructions.
 type Pacs00800108Document struct {
 	XMLName                  xml.Name                        `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08 Document"`
-	FICustomerCreditTransfer FIToFICustomerCreditTransferV08 `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08 FIToFICstmrCdtTrf"`
+	FICustomerCreditTransfer FIToFICustomerCreditTransferV08 `xml:"FIToFICstmrCdtTrf"`
 }
 
 // Pacs00900108Document represents the PACS.009.001.08 Financial Institution Credit Transfer message.
@@ -23,7 +23,7 @@ type Pacs00800108Document struct {
 // typically for settlement purposes and institutional fund movements.
 type Pacs00900108Document struct {
 	XMLName          xml.Name                              `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.009.001.08 Document"`
-	FICreditTransfer FinancialInstitutionCreditTransferV08 `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.009.001.08 FICdtTrf"`
+	FICreditTransfer FinancialInstitutionCreditTransferV08 `xml:"FICdtTrf"`
 }
 
 // Pacs00200110Document represents the PACS.002.001.10 Financial Institution to Financial Institution Payment Status Report.
@@ -31,7 +31,7 @@ type Pacs00900108Document struct {
 // reporting successful processing, rejections, or pending status with detailed reason codes.
 type Pacs00200110Document struct {
 	XMLName               xml.Name                     `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10 Document"`
-	FIPaymentStatusReport FIToFIPaymentStatusReportV10 `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10 FIToFIPmtStsRpt"`
+	FIPaymentStatusReport FIToFIPaymentStatusReportV10 `xml:"FIToFIPmtStsRpt"`
 }
 
 // Pacs00400110Document represents the PACS.004.001.10 Payment Return message.
@@ -39,7 +39,7 @@ type Pacs00200110Document struct {
 // typically due to insufficient funds, incorrect account details, or other processing issues.
 type Pacs00400110Document struct {
 	XMLName       xml.Name         `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.004.001.10 Document"`
-	PaymentReturn PaymentReturnV10 `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.004.001.10 PmtRtr"`
+	PaymentReturn PaymentReturnV10 `xml:"PmtRtr"`
 }
 
 // Pacs02800103Document represents the PACS.028.001.03 Financial Institution to Financial Institution Payment Status Request.
@@ -47,7 +47,7 @@ type Pacs00400110Document struct {
 // enabling tracking and reconciliation of payment instructions in the clearing and settlement process.
 type Pacs02800103Document struct {
 	XMLName                xml.Name                      `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.028.001.03 Document"`
-	FIPaymentStatusRequest FIToFIPaymentStatusRequestV03 `xml:"urn:iso:std:iso:20022:tech:xsd:pacs.028.001.03 FIToFIPmtStsReq"`
+	FIPaymentStatusRequest FIToFIPaymentStatusRequestV03 `xml:"FIToFIPmtStsReq"`
 }
 
 // Camt05200108Document represents the CAMT.052.001.08 Bank to Customer Account Report message.
@@ -55,7 +55,7 @@ type Pacs02800103Document struct {
 // enabling account monitoring and cash management for corporate and institutional clients.
 type Camt05200108Document struct {
 	XMLName           xml.Name                       `xml:"urn:iso:std:iso:20022:tech:xsd:camt.052.001.08 Document"`
-	BankAccountReport BankToCustomerAccountReportV08 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.052.001.08 BkToCstmrAcctRpt"`
+	BankAccountReport BankToCustomerAccountReportV08 `xml:"BkToCstmrAcctRpt"`
 }
 
 // Camt05400108Document represents the CAMT.054.001.08 Bank to Customer Debit Credit Notification message.
@@ -63,7 +63,7 @@ type Camt05200108Document struct {
 // providing detailed transaction information for reconciliation and cash management purposes.
 type Camt05400108Document struct {
 	XMLName                     xml.Name                                 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.054.001.08 Document"`
-	BankDebitCreditNotification BankToCustomerDebitCreditNotificationV08 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.054.001.08 BkToCstmrDbtCdtNtfctn"`
+	BankDebitCreditNotification BankToCustomerDebitCreditNotificationV08 `xml:"BkToCstmrDbtCdtNtfctn"`
 }
 
 // Camt05500109Document represents the CAMT.055.001.09 Customer Payment Cancellation Request message.
@@ -71,7 +71,7 @@ type Camt05400108Document struct {
 // providing justification and reference details for the cancellation request.
 type Camt05500109Document struct {
 	XMLName                      xml.Name                              `xml:"urn:iso:std:iso:20022:tech:xsd:camt.055.001.09 Document"`
-	CustomerPaymentCancelRequest CustomerPaymentCancellationRequestV09 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.055.001.09 CstmrPmtCxlReq"`
+	CustomerPaymentCancelRequest CustomerPaymentCancellationRequestV09 `xml:"CstmrPmtCxlReq"`
 }
 
 // Camt05600108Document represents the CAMT.056.001.08 Financial Institution to Financial Institution Payment Cancellation Request.
@@ -79,7 +79,7 @@ type Camt05500109Document struct {
 // typically used for recall of pacs.008 messages with proper justification and reason codes.
 type Camt05600108Document struct {
 	XMLName                xml.Name                            `xml:"urn:iso:std:iso:20022:tech:xsd:camt.056.001.08 Document"`
-	FIPaymentCancelRequest FIToFIPaymentCancellationRequestV08 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.056.001.08 FIToFIPmtCxlReq"`
+	FIPaymentCancelRequest FIToFIPaymentCancellationRequestV08 `xml:"FIToFIPmtCxlReq"`
 }
 
 // Camt06000105Document represents the CAMT.060.001.05 Account Reporting Request message.
@@ -87,7 +87,7 @@ type Camt05600108Document struct {
 // specifying the type of report, date range, and level of detail required.
 type Camt06000105Document struct {
 	XMLName                 xml.Name                   `xml:"urn:iso:std:iso:20022:tech:xsd:camt.060.001.05 Document"`
-	AccountReportingRequest AccountReportingRequestV05 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.060.001.05 AcctRptgReq"`
+	AccountReportingRequest AccountReportingRequestV05 `xml:"AcctRptgReq"`
 }
 
 // Camt02600107Document represents the CAMT.026.001.07 Unable To Apply message.
@@ -95,7 +95,7 @@ type Camt06000105Document struct {
 // providing detailed information about the reason for non-processing and any corrective actions needed.
 type Camt02600107Document struct {
 	XMLName       xml.Name         `xml:"urn:iso:std:iso:20022:tech:xsd:camt.026.001.07 Document"`
-	UnableToApply UnableToApplyV07 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.026.001.07 UblToApply"`
+	UnableToApply UnableToApplyV07 `xml:"UblToApply"`
 }
 
 // Camt02800109Document represents the CAMT.028.001.09 Additional Payment Info message.
@@ -103,7 +103,7 @@ type Camt02600107Document struct {
 // in the original payment instruction, supporting enhanced payment processing and reconciliation.
 type Camt02800109Document struct {
 	XMLName               xml.Name                 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.028.001.09 Document"`
-	AdditionalPaymentInfo AdditionalPaymentInfoV09 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.028.001.09 AddtlPmtInf"`
+	AdditionalPaymentInfo AdditionalPaymentInfoV09 `xml:"AddtlPmtInf"`
 }
 
 // Camt02900109Document represents the CAMT.029.001.09 Resolution of Investigation message.
@@ -111,7 +111,7 @@ type Camt02800109Document struct {
 // between financial institutions, providing closure to exception handling processes.
 type Camt02900109Document struct {
 	XMLName                 xml.Name                     `xml:"urn:iso:std:iso:20022:tech:xsd:camt.029.001.09 Document"`
-	InvestigationResolution ResolutionOfInvestigationV09 `xml:"urn:iso:std:iso:20022:tech:xsd:camt.029.001.09 RsltnOfInvstgtn"`
+	InvestigationResolution ResolutionOfInvestigationV09 `xml:"RsltnOfInvstgtn"`
 }
 
 // Pain01300107Document represents the PAIN.013.001.07 Creditor Payment Activation Request message.
@@ -119,7 +119,7 @@ type Camt02900109Document struct {
 // commonly used for direct debit scenarios and electronic invoice presentment.
 type Pain01300107Document struct {
 	XMLName                          xml.Name                            `xml:"urn:iso:std:iso:20022:tech:xsd:pain.013.001.07 Document"`
-	CreditorPaymentActivationRequest CreditorPaymentActivationRequestV07 `xml:"urn:iso:std:iso:20022:tech:xsd:pain.013.001.07 CdtrPmtActvtnReq"`
+	CreditorPaymentActivationRequest CreditorPaymentActivationRequestV07 `xml:"CdtrPmtActvtnReq"`
 }
 
 // Pain01400107Document represents the PAIN.014.001.07 Creditor Payment Activation Request Status Report message.
@@ -127,7 +127,7 @@ type Pain01300107Document struct {
 // indicating acceptance, rejection, or processing status of payment activation requests.
 type Pain01400107Document struct {
 	XMLName                               xml.Name                                        `xml:"urn:iso:std:iso:20022:tech:xsd:pain.014.001.07 Document"`
-	CreditorPaymentActivationStatusReport CreditorPaymentActivationRequestStatusReportV07 `xml:"urn:iso:std:iso:20022:tech:xsd:pain.014.001.07 CdtrPmtActvtnReqStsRpt"`
+	CreditorPaymentActivationStatusReport CreditorPaymentActivationRequestStatusReportV07 `xml:"CdtrPmtActvtnReqStsRpt"`
 }
 
 // Admi00400102Document represents the ADMI.004.001.02 System Event Notification message.
@@ -135,7 +135,7 @@ type Pain01400107Document struct {
 // maintenance windows, system availability changes, or operational status updates.
 type Admi00400102Document struct {
 	XMLName                 xml.Name                   `xml:"urn:iso:std:iso:20022:tech:xsd:admi.004.001.02 Document"`
-	SystemEventNotification SystemEventNotificationV02 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.004.001.02 SysEvtNtfctn"`
+	SystemEventNotification SystemEventNotificationV02 `xml:"SysEvtNtfctn"`
 }
 
 // Admi01100101Document represents the ADMI.011.001.01 System Event Acknowledgement message.
@@ -143,7 +143,7 @@ type Admi00400102Document struct {
 // confirming that participants have received and understood system status changes.
 type Admi01100101Document struct {
 	XMLName                    xml.Name                      `xml:"urn:iso:std:iso:20022:tech:xsd:admi.011.001.01 Document"`
-	SystemEventAcknowledgement SystemEventAcknowledgementV01 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.011.001.01 SysEvtAck"`
+	SystemEventAcknowledgement SystemEventAcknowledgementV01 `xml:"SysEvtAck"`
 }
 
 // Admi00600101Document represents the ADMI.006.001.01 Resend Request message.
@@ -151,7 +151,7 @@ type Admi01100101Document struct {
 // of previously sent messages when original messages were not received or processed correctly.
 type Admi00600101Document struct {
 	XMLName       xml.Name         `xml:"urn:iso:std:iso:20022:tech:xsd:admi.006.001.01 Document"`
-	ResendRequest ResendRequestV01 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.006.001.01 RsndReq"`
+	ResendRequest ResendRequestV01 `xml:"RsndReq"`
 }
 
 // Admi00700101Document represents the ADMI.007.001.01 Receipt Acknowledgement message.
@@ -159,7 +159,7 @@ type Admi00600101Document struct {
 // providing confirmation that transmitted messages have been properly received and processed.
 type Admi00700101Document struct {
 	XMLName                xml.Name                  `xml:"urn:iso:std:iso:20022:tech:xsd:admi.007.001.01 Document"`
-	ReceiptAcknowledgement ReceiptAcknowledgementV01 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.007.001.01 RctAck"`
+	ReceiptAcknowledgement ReceiptAcknowledgementV01 `xml:"RctAck"`
 }
 
 // Admi99800102Document represents the ADMI.998.001.02 Administration Proprietary Message.
@@ -167,14 +167,13 @@ type Admi00700101Document struct {
 // between financial institutions that falls outside standard ISO 20022 message types.
 type Admi99800102Document struct {
 	XMLName               xml.Name                            `xml:"urn:iso:std:iso:20022:tech:xsd:admi.998.001.02 Document"`
-	AdministrationMessage AdministrationProprietaryMessageV02 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.998.001.02 AdmstnPrtryMsg"`
+	AdministrationMessage AdministrationProprietaryMessageV02 `xml:"AdmstnPrtryMsg"`
 }
 
 // FIToFICustomerCreditTransferV08 represents the core structure of a PACS.008.001.08 message.
 // This structure contains the group header with message-level information and multiple
 // credit transfer transaction details for inter-bank customer payment processing.
 type FIToFICustomerCreditTransferV08 struct {
-	XMLName                       xml.Name
 	GroupHeader                   GroupHeader93                 `xml:"GrpHdr"`
 	CreditTransferTransactionInfo []CreditTransferTransaction39 `xml:"CdtTrfTxInf"`
 	SupplementaryData             []SupplementaryData           `xml:"SplmtryData,omitempty"`
@@ -184,7 +183,6 @@ type FIToFICustomerCreditTransferV08 struct {
 // It includes message identification, creation timestamp, settlement information, and agent details
 // that are common across all credit transfer transactions in the message batch.
 type GroupHeader93 struct {
-	XMLName                        xml.Name
 	MessageID                      string                                        `xml:"MsgId"`
 	CreationDateTime               *time.Time                                    `xml:"CreDtTm,omitempty"`
 	BatchBooking                   *bool                                         `xml:"BtchBookg,omitempty"`
@@ -202,7 +200,6 @@ type GroupHeader93 struct {
 // This includes payment identification, settlement amounts, charge information, and complete
 // debtor/creditor party details required for processing inter-bank customer credit transfers.
 type CreditTransferTransaction39 struct {
-	XMLName                          xml.Name
 	PaymentID                        PaymentIdentification7                        `xml:"PmtId"`
 	PaymentTypeInfo                  *PaymentTypeInfo28                            `xml:"PmtTpInf,omitempty"`
 	InterbankSettlementAmount        ActiveCurrencyAndAmount                       `xml:"IntrBkSttlmAmt"`
@@ -255,7 +252,6 @@ type CreditTransferTransaction39 struct {
 // This includes instruction ID, end-to-end ID for tracking, transaction ID,
 // and UETR (Unique End-to-end Transaction Reference) for global payment traceability.
 type PaymentIdentification7 struct {
-	XMLName                 xml.Name
 	InstructionID           *string `xml:"InstrId,omitempty"`
 	EndToEndID              string  `xml:"EndToEndId"`
 	TransactionID           *string `xml:"TxId,omitempty"`
@@ -266,7 +262,6 @@ type PaymentIdentification7 struct {
 // PaymentIdentification provides legacy payment identification structure for backward compatibility.
 // Contains basic payment identifiers including instruction ID, end-to-end ID, transaction ID and UETR.
 type PaymentIdentification struct {
-	XMLName       xml.Name
 	InstructionID *string `xml:"InstrId,omitempty"`
 	EndToEndID    string  `xml:"EndToEndId"`
 	TransactionID string  `xml:"TxId"`
@@ -277,7 +272,6 @@ type PaymentIdentification struct {
 // Includes instruction priority, clearing channel, service level, local instruments and category purpose
 // to guide how the payment should be processed by financial institutions.
 type PaymentTypeInfo struct {
-	XMLName             xml.Name
 	InstructionPriority *string          `xml:"InstrPrty,omitempty"`
 	ClearingChannel     *string          `xml:"ClrChanl,omitempty"`
 	ServiceLevel        []ServiceLevel   `xml:"SvcLvl,omitempty"`
@@ -290,7 +284,6 @@ type PaymentTypeInfo struct {
 // Used throughout ISO 20022 messages to specify settlement amounts, fees, and other monetary values
 // with their corresponding three-character ISO currency codes.
 type ActiveCurrencyAndAmount struct {
-	XMLName  xml.Name
 	Value    float64 `xml:",chardata"`
 	Currency string  `xml:"Ccy,attr"`
 }
@@ -299,7 +292,6 @@ type ActiveCurrencyAndAmount struct {
 // Similar to ActiveCurrencyAndAmount but allows for historic currencies that are no longer in active use,
 // supporting legacy transactions and reporting requirements.
 type ActiveOrHistoricCurrencyAndAmount struct {
-	XMLName  xml.Name
 	Value    float64 `xml:",chardata"`
 	Currency string  `xml:"Ccy,attr"`
 }
@@ -308,7 +300,6 @@ type ActiveOrHistoricCurrencyAndAmount struct {
 // Contains the core institution identification plus optional branch details for routing
 // and processing payments through specific institutional locations.
 type BranchAndFinancialInstitutionIdentification struct {
-	XMLName                xml.Name
 	FinancialInstitutionID FinancialInstitutionIdentification `xml:"FinInstnId"`
 	BranchID               *BranchData                        `xml:"BrnchId,omitempty"`
 }
@@ -317,7 +308,6 @@ type BranchAndFinancialInstitutionIdentification struct {
 // Includes BIC codes, clearing system member IDs, LEI, institution name, postal address
 // and other identifiers used for routing and settlement purposes.
 type FinancialInstitutionIdentification struct {
-	XMLName                xml.Name
 	BankIdentifierCode     *string                             `xml:"BICFI,omitempty"`
 	ClearingSystemMemberID *ClearingSystemMemberIdentification `xml:"ClrSysMmbId,omitempty"`
 	LegalEntityIdentifier  *string                             `xml:"LEI,omitempty"`
@@ -330,7 +320,6 @@ type FinancialInstitutionIdentification struct {
 // Includes branch identifier, LEI, name and postal address for precise routing
 // of payments to specific institutional locations.
 type BranchData struct {
-	XMLName               xml.Name
 	ID                    *string        `xml:"Id,omitempty"`
 	LegalEntityIdentifier *string        `xml:"LEI,omitempty"`
 	Name                  *string        `xml:"Nm,omitempty"`
@@ -341,7 +330,6 @@ type BranchData struct {
 // This version matches the exact XSD schema requirements for the pacs.008 message format,
 // ensuring compliance with the specific version's data model requirements.
 type BranchAndFinancialInstitutionIdentification6 struct {
-	XMLName                xml.Name
 	FinancialInstitutionID FinancialInstitutionIdentification18 `xml:"FinInstnId"`
 	BranchID               *BranchData3                         `xml:"BrnchId,omitempty"`
 }
@@ -350,7 +338,6 @@ type BranchAndFinancialInstitutionIdentification6 struct {
 // Matches the exact XSD schema structure for financial institution identification
 // within the PACS.008.001.08 message format specification.
 type FinancialInstitutionIdentification18 struct {
-	XMLName                xml.Name
 	BankIdentifierCode     *string                             `xml:"BICFI,omitempty"`
 	ClearingSystemMemberID *ClearingSystemMemberIdentification `xml:"ClrSysMmbId,omitempty"`
 	LegalEntityIdentifier  *string                             `xml:"LEI,omitempty"`
@@ -363,7 +350,6 @@ type FinancialInstitutionIdentification18 struct {
 // This structure matches the exact XSD schema requirements for branch data
 // within the pacs.008.001.08 message format.
 type BranchData3 struct {
-	XMLName               xml.Name
 	ID                    *string        `xml:"Id,omitempty"`
 	LegalEntityIdentifier *string        `xml:"LEI,omitempty"`
 	Name                  *string        `xml:"Nm,omitempty"`
@@ -374,7 +360,6 @@ type BranchData3 struct {
 // Contains instruction priority, service level, local instrument, sequence type and category purpose
 // as defined by the pacs.008.001.08 XSD schema specification.
 type PaymentTypeInfo28 struct {
-	XMLName             xml.Name
 	InstructionPriority *string          `xml:"InstrPrty,omitempty"`
 	ServiceLevel        []ServiceLevel   `xml:"SvcLvl,omitempty"`
 	LocalInstrument     *LocalInstrument `xml:"LclInstrm,omitempty"`
@@ -386,7 +371,6 @@ type PaymentTypeInfo28 struct {
 // Provides comprehensive identification details for parties involved in credit transfer transactions,
 // including name, postal address, identification details and contact information.
 type PartyIdentification135 struct {
-	XMLName            xml.Name
 	Name               *string          `xml:"Nm,omitempty"`
 	PostalAddress      *PostalAddress24 `xml:"PstlAdr,omitempty"`
 	ID                 *Party38         `xml:"Id,omitempty"`
@@ -398,7 +382,6 @@ type PartyIdentification135 struct {
 // Provides detailed address components including street, building, postal code, town, district,
 // country and additional address lines for precise party location identification.
 type PostalAddress24 struct {
-	XMLName            xml.Name
 	AddressType        *string  `xml:"AdrTp,omitempty"`
 	Department         *string  `xml:"Dept,omitempty"`
 	SubDepartment      *string  `xml:"SubDept,omitempty"`
@@ -421,7 +404,6 @@ type PostalAddress24 struct {
 // Supports both organization identification (for corporate entities) and private identification
 // (for individual persons) as defined by the pacs.008.001.08 XSD schema.
 type Party38 struct {
-	XMLName        xml.Name
 	OrganizationID *OrganizationIdentification29 `xml:"OrgId,omitempty"`
 	PrivateID      *PersonIdentification13       `xml:"PrvtId,omitempty"`
 }
@@ -430,7 +412,6 @@ type Party38 struct {
 // Includes name, various communication methods (phone, mobile, fax, email), job details,
 // department information and preferred communication methods for party contacts.
 type Contact4 struct {
-	XMLName         xml.Name
 	NamePrefix      *string         `xml:"NmPrfx,omitempty"`
 	Name            *string         `xml:"Nm,omitempty"`
 	PhoneNumber     *string         `xml:"PhneNb,omitempty"`
@@ -449,7 +430,6 @@ type Contact4 struct {
 // Provides comprehensive account information including ID, type, currency, name and proxy details
 // required for debtor and creditor account specification in credit transfer transactions.
 type CashAccount38 struct {
-	XMLName  xml.Name
 	ID       AccountIdentification4       `xml:"Id"`
 	Type     *CashAccountType2Choice      `xml:"Tp,omitempty"`
 	Currency *string                      `xml:"Ccy,omitempty"`
@@ -461,16 +441,14 @@ type CashAccount38 struct {
 // Supports both standardized IBAN format and proprietary account identification schemes
 // for flexible account specification in payment messages.
 type AccountIdentification4 struct {
-	XMLName xml.Name
-	IBAN    *string                        `xml:"IBAN,omitempty"`
-	Other   *GenericAccountIdentification1 `xml:"Othr,omitempty"`
+	IBAN  *string                        `xml:"IBAN,omitempty"`
+	Other *GenericAccountIdentification1 `xml:"Othr,omitempty"`
 }
 
 // CashAccountType2 specifies the type of cash account using standard codes or proprietary values.
 // Allows classification of accounts (current, savings, etc.) for proper payment processing
 // and regulatory compliance requirements.
 type CashAccountType2 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
@@ -479,16 +457,14 @@ type CashAccountType2 struct {
 // Enables account identification through proxy mechanisms such as mobile phone numbers,
 // email addresses or other alternative identifiers for modern payment systems.
 type ProxyAccountIdentification1 struct {
-	XMLName xml.Name
-	Type    *ProxyAccountType1 `xml:"Tp,omitempty"`
-	ID      string             `xml:"Id"`
+	Type *ProxyAccountType1 `xml:"Tp,omitempty"`
+	ID   string             `xml:"Id"`
 }
 
 // ProxyAccountType1 specifies the type of proxy account identifier being used.
 // Defines the format and nature of the proxy identifier (phone, email, etc.)
 // to ensure correct interpretation by receiving systems.
 type ProxyAccountType1 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
@@ -497,7 +473,6 @@ type ProxyAccountType1 struct {
 // Allows flexible account identification using proprietary or non-standard numbering schemes
 // with optional scheme name and issuer information for context.
 type GenericAccountIdentification1 struct {
-	XMLName    xml.Name
 	ID         string              `xml:"Id"`
 	SchemeName *AccountSchemeName1 `xml:"SchmeNm,omitempty"`
 	Issuer     *string             `xml:"Issr,omitempty"`
@@ -507,7 +482,6 @@ type GenericAccountIdentification1 struct {
 // Provides both standardized codes and proprietary scheme names to describe
 // the format and interpretation of account identifiers.
 type AccountSchemeName1 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
@@ -516,7 +490,6 @@ type AccountSchemeName1 struct {
 // Includes BIC codes, Legal Entity Identifiers (LEI) and other organizational identifiers
 // required for compliance and routing purposes in financial transactions.
 type OrganizationIdentification29 struct {
-	XMLName               xml.Name
 	AnyBankIdentifierCode *string                              `xml:"AnyBIC,omitempty"`
 	LegalEntityIdentifier *string                              `xml:"LEI,omitempty"`
 	Other                 []GenericOrganizationIdentification1 `xml:"Othr,omitempty"`
@@ -526,26 +499,22 @@ type OrganizationIdentification29 struct {
 // Supports custom identification schemes for organizations that may not have
 // standard BIC or LEI identifiers, with scheme name and issuer context.
 type GenericOrganizationIdentification1 struct {
-	XMLName    xml.Name
 	ID         string                                 `xml:"Id"`
 	SchemeName *OrganizationIdentificationSchemeName1 `xml:"SchmeNm,omitempty"`
 	Issuer     *string                                `xml:"Issr,omitempty"`
 }
 
 type OrganizationIdentificationSchemeName1 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
 type PersonIdentification13 struct {
-	XMLName             xml.Name
 	DateAndPlaceOfBirth *DateAndPlaceOfBirth1          `xml:"DtAndPlcOfBirth,omitempty"`
 	Other               []GenericPersonIdentification2 `xml:"Othr,omitempty"`
 }
 
 type DateAndPlaceOfBirth1 struct {
-	XMLName         xml.Name
 	BirthDate       *string `xml:"BirthDt,omitempty"`
 	ProvinceOfBirth *string `xml:"PrvcOfBirth,omitempty"`
 	CityOfBirth     string  `xml:"CityOfBirth"`
@@ -553,34 +522,29 @@ type DateAndPlaceOfBirth1 struct {
 }
 
 type GenericPersonIdentification2 struct {
-	XMLName    xml.Name
 	ID         string                           `xml:"Id"`
 	SchemeName *PersonIdentificationSchemeName2 `xml:"SchmeNm,omitempty"`
 	Issuer     *string                          `xml:"Issr,omitempty"`
 }
 
 type PersonIdentificationSchemeName2 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
 type OtherContact1 struct {
-	XMLName     xml.Name
 	ChannelType string  `xml:"ChanlTp"`
 	ID          *string `xml:"Id,omitempty"`
 }
 
 // Charges7 for pacs.008.001.08 (exact XSD match)
 type Charges7 struct {
-	XMLName xml.Name
-	Amount  ActiveOrHistoricCurrencyAndAmount            `xml:"Amt"`
-	Agent   BranchAndFinancialInstitutionIdentification6 `xml:"Agt"`
+	Amount ActiveOrHistoricCurrencyAndAmount            `xml:"Amt"`
+	Agent  BranchAndFinancialInstitutionIdentification6 `xml:"Agt"`
 }
 
 // SettlementInstruction7 for pacs.008.001.08 (exact XSD match)
 type SettlementInstruction7 struct {
-	XMLName                              xml.Name
 	SettlementMethod                     string                                        `xml:"SttlmMtd"`
 	SettlementAccount                    *CashAccount                                  `xml:"SttlmAcct,omitempty"`
 	ClearingSystem                       *ClearingSystemIdentificationSecondary        `xml:"ClrSys,omitempty"`
@@ -594,7 +558,6 @@ type SettlementInstruction7 struct {
 
 // CashAccount represents a cash account
 type CashAccount struct {
-	XMLName  xml.Name
 	ID       AccountIdentification       `xml:"Id"`
 	Type     *CashAccountType            `xml:"Tp,omitempty"`
 	Currency *string                     `xml:"Ccy,omitempty"`
@@ -604,14 +567,12 @@ type CashAccount struct {
 
 // AccountIdentification contains account identification choices
 type AccountIdentification struct {
-	XMLName xml.Name
-	IBAN    *string                       `xml:"IBAN,omitempty"`
-	Other   *GenericAccountIdentification `xml:"Othr,omitempty"`
+	IBAN  *string                       `xml:"IBAN,omitempty"`
+	Other *GenericAccountIdentification `xml:"Othr,omitempty"`
 }
 
 // PartyIdentification contains party identification information
 type PartyIdentification struct {
-	XMLName            xml.Name
 	Name               *string        `xml:"Nm,omitempty"`
 	PostalAddress      *PostalAddress `xml:"PstlAdr,omitempty"`
 	ID                 *Party         `xml:"Id,omitempty"`
@@ -621,14 +582,12 @@ type PartyIdentification struct {
 
 // Party contains party identification choices
 type Party struct {
-	XMLName        xml.Name
 	OrganizationID *OrganizationIdentification `xml:"OrgId,omitempty"`
 	PrivateID      *PersonIdentification       `xml:"PrvtId,omitempty"`
 }
 
 // PostalAddress contains postal address information
 type PostalAddress struct {
-	XMLName            xml.Name
 	AddressType        *string  `xml:"AdrTp,omitempty"`
 	Department         *string  `xml:"Dept,omitempty"`
 	SubDepartment      *string  `xml:"SubDept,omitempty"`
@@ -649,14 +608,12 @@ type PostalAddress struct {
 
 // Charges contains charge information
 type Charges struct {
-	XMLName xml.Name
-	Amount  ActiveOrHistoricCurrencyAndAmount           `xml:"Amt"`
-	Agent   BranchAndFinancialInstitutionIdentification `xml:"Agt"`
+	Amount ActiveOrHistoricCurrencyAndAmount           `xml:"Amt"`
+	Agent  BranchAndFinancialInstitutionIdentification `xml:"Agt"`
 }
 
 // TaxInfo contains tax information
 type TaxInfo struct {
-	XMLName                xml.Name
 	Creditor               *TaxPartyCreditor                  `xml:"Cdtr,omitempty"`
 	Debtor                 *TaxPartyDebtor                    `xml:"Dbtr,omitempty"`
 	UltimateDebtor         *TaxPartyDebtor                    `xml:"UltmtDbtr,omitempty"`
@@ -672,7 +629,6 @@ type TaxInfo struct {
 
 // TaxPartyCreditor contains creditor tax party information
 type TaxPartyCreditor struct {
-	XMLName        xml.Name
 	TaxID          *string `xml:"TaxId,omitempty"`
 	RegistrationID *string `xml:"RegnId,omitempty"`
 	TaxType        *string `xml:"TaxTp,omitempty"`
@@ -680,7 +636,6 @@ type TaxPartyCreditor struct {
 
 // TaxPartyDebtor contains debtor tax party information
 type TaxPartyDebtor struct {
-	XMLName        xml.Name
 	TaxID          *string           `xml:"TaxId,omitempty"`
 	RegistrationID *string           `xml:"RegnId,omitempty"`
 	TaxType        *string           `xml:"TaxTp,omitempty"`
@@ -689,7 +644,6 @@ type TaxPartyDebtor struct {
 
 // RemittanceLocation contains remittance location information
 type RemittanceLocation struct {
-	XMLName                             xml.Name
 	RemittanceID                        *string                  `xml:"RmtId,omitempty"`
 	RemittanceLocationDetails           []RemittanceLocationData `xml:"RmtLctnDtls,omitempty"`
 	RemittanceLocationElectronicAddress *string                  `xml:"RmtLctnElctrncAdr,omitempty"`
@@ -698,47 +652,40 @@ type RemittanceLocation struct {
 
 // RemittanceInfo contains remittance information
 type RemittanceInfo struct {
-	XMLName      xml.Name
 	Unstructured []string                   `xml:"Ustrd,omitempty"`
 	Structured   []StructuredRemittanceInfo `xml:"Strd,omitempty"`
 }
 
 // SupplementaryData contains supplementary data
 type SupplementaryData struct {
-	XMLName      xml.Name
 	PlaceAndName *string                   `xml:"PlcAndNm,omitempty"`
 	Envelope     SupplementaryDataEnvelope `xml:"Envlp"`
 }
 
 // SupplementaryDataEnvelope contains the envelope for supplementary data
 type SupplementaryDataEnvelope struct {
-	XMLName xml.Name
 	// Any XML content can go here - this is intentionally flexible for extensibility
 	Content string `xml:",innerxml"`
 }
 
 // SupplementaryData1 - XSD-specific version
 type SupplementaryData1 struct {
-	XMLName      xml.Name
 	PlaceAndName *string                    `xml:"PlcAndNm,omitempty"`
 	Envelope     SupplementaryDataEnvelope1 `xml:"Envlp"`
 }
 
 type SupplementaryDataEnvelope1 struct {
-	XMLName xml.Name
 	Content string `xml:",innerxml"`
 }
 
 // Additional supporting types for pacs.009.001.08
 
 type SettlementDateTimeIndication1 struct {
-	XMLName        xml.Name
 	DebitDateTime  *time.Time `xml:"DbtDtTm,omitempty"`
 	CreditDateTime *time.Time `xml:"CdtDtTm,omitempty"`
 }
 
 type SettlementTimeRequest2 struct {
-	XMLName                        xml.Name
 	ContinuousLinkedSettlementTime *time.Time `xml:"CLSTm,omitempty"`
 	TillTime                       *time.Time `xml:"TillTm,omitempty"`
 	FromTime                       *time.Time `xml:"FrTm,omitempty"`
@@ -746,30 +693,25 @@ type SettlementTimeRequest2 struct {
 }
 
 type InstructionForCreditorAgent2 struct {
-	XMLName         xml.Name
 	Code            *string `xml:"Cd,omitempty"`
 	InstructionInfo *string `xml:"InstrInf,omitempty"`
 }
 
 type InstructionForNextAgent1 struct {
-	XMLName         xml.Name
 	Code            *string `xml:"Cd,omitempty"`
 	InstructionInfo *string `xml:"InstrInf,omitempty"`
 }
 
 type Purpose2 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
 type RemittanceInfo2 struct {
-	XMLName      xml.Name
 	Unstructured []string `xml:"Ustrd,omitempty"`
 }
 
 type CreditTransferTransaction37 struct {
-	XMLName                          xml.Name
 	UltimateDebtor                   *PartyIdentification135                       `xml:"UltmtDbtr,omitempty"`
 	InitiatingParty                  *PartyIdentification135                       `xml:"InitgPty,omitempty"`
 	Debtor                           PartyIdentification135                        `xml:"Dbtr"`
@@ -801,13 +743,11 @@ type CreditTransferTransaction37 struct {
 }
 
 type InstructionForCreditorAgent1 struct {
-	XMLName         xml.Name
 	Code            *string `xml:"Cd,omitempty"`
 	InstructionInfo *string `xml:"InstrInf,omitempty"`
 }
 
 type TaxInfo8 struct {
-	XMLName                xml.Name
 	Creditor               *TaxParty1                         `xml:"Cdtr,omitempty"`
 	Debtor                 *TaxParty2                         `xml:"Dbtr,omitempty"`
 	AdministrationZone     *string                            `xml:"AdmstnZone,omitempty"`
@@ -821,20 +761,17 @@ type TaxInfo8 struct {
 }
 
 type RemittanceInfo16 struct {
-	XMLName      xml.Name
 	Unstructured []string                     `xml:"Ustrd,omitempty"`
 	Structured   []StructuredRemittanceInfo16 `xml:"Strd,omitempty"`
 }
 
 type TaxParty1 struct {
-	XMLName        xml.Name
 	TaxID          *string `xml:"TaxId,omitempty"`
 	RegistrationID *string `xml:"RegnId,omitempty"`
 	TaxType        *string `xml:"TaxTp,omitempty"`
 }
 
 type TaxParty2 struct {
-	XMLName        xml.Name
 	TaxID          *string            `xml:"TaxId,omitempty"`
 	RegistrationID *string            `xml:"RegnId,omitempty"`
 	TaxType        *string            `xml:"TaxTp,omitempty"`
@@ -842,13 +779,11 @@ type TaxParty2 struct {
 }
 
 type TaxAuthorisation1 struct {
-	XMLName xml.Name
-	Title   *string `xml:"Titl,omitempty"`
-	Name    *string `xml:"Nm,omitempty"`
+	Title *string `xml:"Titl,omitempty"`
+	Name  *string `xml:"Nm,omitempty"`
 }
 
 type TaxRecord2 struct {
-	XMLName         xml.Name
 	Type            *string     `xml:"Tp,omitempty"`
 	Category        *string     `xml:"Ctgy,omitempty"`
 	CategoryDetails *string     `xml:"CtgyDtls,omitempty"`
@@ -861,14 +796,12 @@ type TaxRecord2 struct {
 }
 
 type TaxPeriod2 struct {
-	XMLName    xml.Name
 	Year       *string      `xml:"Yr,omitempty"`
 	Type       *string      `xml:"Tp,omitempty"`
 	FromToDate *DatePeriod2 `xml:"FrToDt,omitempty"`
 }
 
 type TaxAmount2 struct {
-	XMLName           xml.Name
 	Rate              *float64                           `xml:"Rate,omitempty"`
 	TaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TaxblBaseAmt,omitempty"`
 	TotalAmount       *ActiveOrHistoricCurrencyAndAmount `xml:"TtlAmt,omitempty"`
@@ -876,19 +809,16 @@ type TaxAmount2 struct {
 }
 
 type TaxRecordDetails2 struct {
-	XMLName xml.Name
-	Period  *TaxPeriod2                       `xml:"Prd,omitempty"`
-	Amount  ActiveOrHistoricCurrencyAndAmount `xml:"Amt"`
+	Period *TaxPeriod2                       `xml:"Prd,omitempty"`
+	Amount ActiveOrHistoricCurrencyAndAmount `xml:"Amt"`
 }
 
 type DatePeriod2 struct {
-	XMLName  xml.Name
 	FromDate *string `xml:"FrDt,omitempty"`
 	ToDate   *string `xml:"ToDt,omitempty"`
 }
 
 type StructuredRemittanceInfo16 struct {
-	XMLName                  xml.Name
 	ReferredDocumentInfo     []ReferredDocumentInfo7 `xml:"RfrdDocInf,omitempty"`
 	ReferredDocumentAmount   *RemittanceAmount2      `xml:"RfrdDocAmt,omitempty"`
 	CreditorReferenceInfo    *CreditorReferenceInfo2 `xml:"CdtrRefInf,omitempty"`
@@ -900,7 +830,6 @@ type StructuredRemittanceInfo16 struct {
 }
 
 type ReferredDocumentInfo7 struct {
-	XMLName     xml.Name
 	Type        *ReferredDocumentType4 `xml:"Tp,omitempty"`
 	Number      *string                `xml:"Nb,omitempty"`
 	RelatedDate *string                `xml:"RltdDt,omitempty"`
@@ -908,33 +837,28 @@ type ReferredDocumentInfo7 struct {
 }
 
 type ReferredDocumentType4 struct {
-	XMLName           xml.Name
 	CodeOrProprietary ReferredDocumentType3 `xml:"CdOrPrtry"`
 	Issuer            *string               `xml:"Issr,omitempty"`
 }
 
 type ReferredDocumentType3 struct {
-	XMLName     xml.Name
 	Code        *string `xml:"Cd,omitempty"`
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
 type DocumentLineInfo1 struct {
-	XMLName        xml.Name
 	Identification []DocumentLineIdentification1 `xml:"Id"`
 	Description    *string                       `xml:"Desc,omitempty"`
 	Amount         *RemittanceAmount3            `xml:"Amt,omitempty"`
 }
 
 type DocumentLineIdentification1 struct {
-	XMLName     xml.Name
 	Type        *DocumentLineType1 `xml:"Tp,omitempty"`
 	Number      *string            `xml:"Nb,omitempty"`
 	RelatedDate *time.Time         `xml:"RltdDt,omitempty"`
 }
 
 type DocumentLineType1 struct {
-	XMLName           xml.Name
 	CodeOrProprietary DocumentLineType1Choice `xml:"CdOrPrtry"`
 	Issuer            *string                 `xml:"Issr,omitempty"`
 }
@@ -1654,7 +1578,7 @@ type ReceiptAcknowledgementV01 struct {
 // providing detailed information about the rejection reason, error location, and additional diagnostic data.
 type Admi00200101Document struct {
 	XMLName          xml.Name            `xml:"urn:iso:std:iso:20022:tech:xsd:admi.002.001.01 Document"`
-	MessageRejection MessageRejectionV01 `xml:"urn:iso:std:iso:20022:tech:xsd:admi.002.001.01 MessageRejectionV01"`
+	MessageRejection MessageRejectionV01 `xml:"admi.002.001.01"`
 }
 
 // MessageRejectionV01 represents the core structure of an ADMI.002.001.01 message.
@@ -4154,7 +4078,6 @@ func (f *FIToFICustomerCreditTransferV08) Validate() error {
 // BusinessApplicationHeaderV02 represents the Business Application Header used to wrap ISO 20022 messages.
 // It provides message identification, routing information, and processing metadata for business application messages.
 type BusinessApplicationHeaderV02 struct {
-	XMLName                xml.Name
 	CharacterSet           *string                       `xml:"CharSet,omitempty"`    // Character set used in the message (UnicodeChartsCode)
 	From                   Party44                       `xml:"Fr"`                   // Message originator
 	To                     Party44                       `xml:"To"`                   // Message recipient
@@ -4401,7 +4324,7 @@ func (b *BusinessApplicationHeader5) Validate() error {
 // BusinessApplicationHeaderDocument represents a complete BAH message envelope
 type BusinessApplicationHeaderDocument struct {
 	XMLName xml.Name                     `xml:"urn:iso:std:iso:20022:tech:xsd:head.001.001.02 Document"`
-	AppHdr  BusinessApplicationHeaderV02 `xml:"urn:iso:std:iso:20022:tech:xsd:head.001.001.02 AppHdr"`
+	AppHdr  BusinessApplicationHeaderV02 `xml:"AppHdr"`
 }
 
 // Validate validates the BusinessApplicationHeaderDocument
