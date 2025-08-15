@@ -2078,7 +2078,7 @@ type PaymentTransaction106 struct {
 	OriginalUETR                      *string                                       `xml:"OrgnlUETR,omitempty"`      // UUIDv4Identifier
 	OriginalClearingSystemReference   *string                                       `xml:"OrgnlClrSysRef,omitempty"` // Max35Text
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount            `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
-	OriginalInterbankSettlementDate   *time.Time                                    `xml:"OrgnlIntrBkSttlmDt,omitempty"` // ISODate
+	OriginalInterbankSettlementDate   *string                                       `xml:"OrgnlIntrBkSttlmDt,omitempty"` // ISODate
 	Assignor                          *BranchAndFinancialInstitutionIdentification6 `xml:"Assgnr,omitempty"`
 	Assignee                          *BranchAndFinancialInstitutionIdentification6 `xml:"Assgne,omitempty"`
 	CancellationReasonInfo            []PaymentCancellationReason5                  `xml:"CxlRsnInf,omitempty"` // unbounded
@@ -2194,9 +2194,9 @@ type PaymentTransaction91 struct {
 	ModificationStatusReasonInfo      []ModificationStatusReason2        `xml:"ModStsRsnInf,omitempty"`        // NEW: unbounded
 	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`        // NEW
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"` // NEW
-	OriginalInterbankSettlementDate   *time.Time                         `xml:"OrgnlIntrBkSttlmDt,omitempty"`  // NEW: ISODate
-	Assignor                          *Party40                           `xml:"Assgnr,omitempty"`              // NEW: Party40Choice
-	Assignee                          *Party40                           `xml:"Assgne,omitempty"`              // NEW: Party40Choice
+	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40Choice
+	Assignee                          *Party40                           `xml:"Assgne,omitempty"` // NEW: Party40Choice
 	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
