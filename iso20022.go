@@ -971,10 +971,10 @@ type DocumentAdjustment1 struct {
 	AdditionalInfo       *string                           `xml:"AddtlInf,omitempty"`
 }
 
-// DateAndDateTime2 matches XSD type
+// DateAndDateTime2 - Choice between date or datetime from camt.029.001.09 XSD
 type DateAndDateTime2 struct {
-	Date     *string    `xml:"Dt,omitempty"`
-	DateTime *time.Time `xml:"DtTm,omitempty"`
+	Date     *time.Time `xml:"Dt,omitempty"`   // ISODate
+	DateTime *time.Time `xml:"DtTm,omitempty"` // ISODateTime
 }
 
 // Supporting types for completeness
@@ -1430,13 +1430,69 @@ type AccountReportingRequestV05 struct {
 	SupplementaryData []SupplementaryData1 `xml:"SplmtryData,omitempty"`
 }
 
-// UnableToApplyV07 - camt.026.001.07
+// UnderlyingGroupInformation1 - Group information for camt.026.001.07
+type UnderlyingGroupInformation1 struct {
+	OriginalMessageID            string     `xml:"OrgnlMsgId"`              // Max35Text - Required
+	OriginalMessageNameID        string     `xml:"OrgnlMsgNmId"`            // Max35Text - Required
+	OriginalCreationDateTime     *time.Time `xml:"OrgnlCreDtTm,omitempty"`  // ISODateTime
+	OriginalMessageDeliveryChannel *string  `xml:"OrgnlMsgDlvryChanl,omitempty"` // Max35Text
+}
+
+// UnderlyingPaymentInstruction5 - Payment instruction for camt.026.001.07
+type UnderlyingPaymentInstruction5 struct {
+	OriginalGroupInfo       *UnderlyingGroupInformation1 `xml:"OrgnlGrpInf,omitempty"`
+	OriginalPaymentInfoID   *string                      `xml:"OrgnlPmtInfId,omitempty"`   // Max35Text
+	OriginalInstructionID   *string                      `xml:"OrgnlInstrId,omitempty"`    // Max35Text
+	OriginalEndToEndID      *string                      `xml:"OrgnlEndToEndId,omitempty"` // Max35Text
+	OriginalUETR            *string                      `xml:"OrgnlUETR,omitempty"`       // UUIDv4Identifier
+}
+
+// UnderlyingPaymentTransaction4 - Payment transaction for camt.026.001.07  
+type UnderlyingPaymentTransaction4 struct {
+	OriginalGroupInfo                 *UnderlyingGroupInformation1           `xml:"OrgnlGrpInf,omitempty"`
+	OriginalInstructionID             *string                                `xml:"OrgnlInstrId,omitempty"`        // Max35Text
+	OriginalEndToEndID                *string                                `xml:"OrgnlEndToEndId,omitempty"`     // Max35Text
+	OriginalTransactionID             *string                                `xml:"OrgnlTxId,omitempty"`           // Max35Text
+	OriginalUETR                      *string                                `xml:"OrgnlUETR,omitempty"`           // UUIDv4Identifier
+	OriginalInterbankSettlementAmount ActiveOrHistoricCurrencyAndAmount      `xml:"OrgnlIntrBkSttlmAmt"`           // ADDED: Required
+	OriginalInterbankSettlementDate   time.Time                              `xml:"OrgnlIntrBkSttlmDt"`            // ADDED: Required ISODate
+	OriginalTransactionReference      *OriginalTransactionReference28        `xml:"OrgnlTxRef,omitempty"`          // ADDED: Optional
+}
+
+// UnderlyingStatementEntry3 - Statement entry for camt.026.001.07
+type UnderlyingStatementEntry3 struct {
+	OriginalGroupInfo *UnderlyingGroupInformation1 `xml:"OrgnlGrpInf,omitempty"`
+	// Note: XSD shows this as empty complexType, so minimal structure for now
+}
+
+// UnderlyingTransaction5 - Choice of underlying transaction types for camt.026.001.07
+type UnderlyingTransaction5 struct {
+	PaymentInstruction  *UnderlyingPaymentInstruction5  `xml:"Initn,omitempty"`
+	InterbankTransaction *UnderlyingPaymentTransaction4  `xml:"IntrBk,omitempty"` 
+	StatementEntry      *UnderlyingStatementEntry3      `xml:"StmtNtry,omitempty"`
+}
+
+// MissingOrIncorrectInformation3 - Missing/incorrect info for camt.026.001.07  
+type MissingOrIncorrectInformation3 struct {
+	AMLRequired        *bool                       `xml:"AMLReq,omitempty"`       // AMLIndicator (boolean)
+	MissingInformation []UnableToApplyMissing1     `xml:"MssngInf,omitempty"`     // Max 10
+	IncorrectInformation []UnableToApplyIncorrect1 `xml:"IncrrctInf,omitempty"`   // Max 10
+}
+
+// UnableToApplyJustification3 - Choice for unable to apply justification from camt.026.001.07
+type UnableToApplyJustification3 struct {
+	AnyInformation                 *bool                            `xml:"AnyInf,omitempty"`            // YesNoIndicator
+	MissingOrIncorrectInformation  *MissingOrIncorrectInformation3  `xml:"MssngOrIncrrctInf,omitempty"`
+	PossibleDuplicateInstruction   *bool                            `xml:"PssblDplctInstr,omitempty"`   // TrueFalseIndicator
+}
+
+// UnableToApplyV07 - Fixed to match XSD from camt.026.001.07
 type UnableToApplyV07 struct {
-	Assignment        CaseAssignment5             `xml:"Assgnmt"`
-	Case              *Case5                      `xml:"Case,omitempty"`
-	Underlying        UnderlyingTransaction21     `xml:"Undrlyg"`
-	Justification     UnableToApplyJustification3 `xml:"Justfn"`
-	SupplementaryData []SupplementaryData         `xml:"SplmtryData,omitempty"`
+	Assignment        CaseAssignment5              `xml:"Assgnmt"`
+	Case              *Case5                       `xml:"Case,omitempty"`
+	Underlying        UnderlyingTransaction5       `xml:"Undrlyg"`              // FIXED: was UnderlyingTransaction21, now uses UnderlyingTransaction5
+	Justification     UnableToApplyJustification3  `xml:"Justfn"`               // FIXED: was UnableToApplyJustification3, now uses Choice version  
+	SupplementaryData []SupplementaryData1         `xml:"SplmtryData,omitempty"` // FIXED: was SupplementaryData, now SupplementaryData1
 }
 
 // AdditionalPaymentInfoV09 - camt.028.001.09
@@ -1449,17 +1505,83 @@ type AdditionalPaymentInfoV09 struct {
 }
 
 // ResolutionOfInvestigationV09 - camt.029.001.09
+// InvestigationStatus5 - Choice for investigation status from camt.029.001.09 XSD
+type InvestigationStatus5 struct {
+	Confirmation                     *string                    `xml:"Conf,omitempty"`         // ExternalInvestigationExecutionConfirmation1Code
+	RejectedModification             []ModificationStatusReason1 `xml:"RjctdMod,omitempty"`     // unbounded, minOccurs=1 when used
+	DuplicateOf                      *Case5                     `xml:"DplctOf,omitempty"`
+	AssignmentCancellationConfirmation *bool                    `xml:"AssgnmtCxlConf,omitempty"` // YesNoIndicator
+}
+
+// ClaimNonReceiptDetails - Actual claim details from camt.029.001.09 XSD
+type ClaimNonReceiptDetails struct {
+	DateProcessed       time.Time                                      `xml:"DtPrcd"`          // ISODate - Required
+	OriginalNextAgent   *BranchAndFinancialInstitutionIdentification6 `xml:"OrgnlNxtAgt,omitempty"`
+}
+
+// ClaimNonReceiptRejectReason1 - Reason for claim non-receipt rejection  
+type ClaimNonReceiptRejectReason1 struct {
+	Code        *string `xml:"Cd,omitempty"`    // ExternalClaimNonReceiptRejection1Code
+	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+}
+
+// ClaimNonReceipt2 - Choice for claim non-receipt from camt.029.001.09 XSD
+type ClaimNonReceipt2 struct {
+	Accepted *ClaimNonReceiptDetails       `xml:"Accptd,omitempty"` // FIXED: was recursive, now uses ClaimNonReceiptDetails
+	Rejected *ClaimNonReceiptRejectReason1 `xml:"Rjctd,omitempty"`
+}
+
+// CorrectiveGroupInformation1 - Group information for corrective transactions from camt.029.001.09 XSD
+type CorrectiveGroupInformation1 struct {
+	MessageID         string     `xml:"MsgId"`           // Max35Text - Required
+	MessageNameID     string     `xml:"MsgNmId"`         // Max35Text - Required  
+	CreationDateTime  *time.Time `xml:"CreDtTm,omitempty"` // ISODateTime
+}
+
+
+// CorrectivePaymentInitiation4 - Corrective payment initiation from camt.029.001.09 XSD
+type CorrectivePaymentInitiation4 struct {
+	GroupHeader                *CorrectiveGroupInformation1           `xml:"GrpHdr,omitempty"`         
+	PaymentInfoID              *string                                `xml:"PmtInfId,omitempty"`       // Max35Text
+	InstructionID              *string                                `xml:"InstrId,omitempty"`        // Max35Text
+	EndToEndID                 *string                                `xml:"EndToEndId,omitempty"`     // Max35Text
+	UETR                       *string                                `xml:"UETR,omitempty"`           // UUIDv4Identifier
+	InstructedAmount           ActiveOrHistoricCurrencyAndAmount      `xml:"InstdAmt"`                 // Required
+	RequestedExecutionDate     *DateAndDateTime2                      `xml:"ReqdExctnDt,omitempty"`
+	RequestedCollectionDate    *time.Time                             `xml:"ReqdColltnDt,omitempty"`   // ISODate
+	CreditorSchemeIdentification *PartyIdentification135              `xml:"CdtrSchmeId,omitempty"`
+	// Note: Additional fields from XSD not implemented for brevity - can be added as needed
+}
+
+// CorrectiveInterbankTransaction2 - Corrective interbank transaction from camt.029.001.09 XSD
+type CorrectiveInterbankTransaction2 struct {
+	GroupHeader                   *CorrectiveGroupInformation1      `xml:"GrpHdr,omitempty"`
+	InstructionID                 *string                           `xml:"InstrId,omitempty"`        // Max35Text
+	EndToEndID                    *string                           `xml:"EndToEndId,omitempty"`     // Max35Text
+	TransactionID                 *string                           `xml:"TxId,omitempty"`           // Max35Text
+	UETR                          *string                           `xml:"UETR,omitempty"`           // UUIDv4Identifier
+	InterbankSettlementAmount     ActiveOrHistoricCurrencyAndAmount `xml:"IntrBkSttlmAmt"`           // Required
+	InterbankSettlementDate       time.Time                         `xml:"IntrBkSttlmDt"`            // ISODate - Required
+}
+
+// CorrectiveTransaction4 - Choice for corrective transaction from camt.029.001.09 XSD
+type CorrectiveTransaction4 struct {
+	PaymentInitiation    *CorrectivePaymentInitiation4    `xml:"Initn,omitempty"`
+	InterbankTransaction *CorrectiveInterbankTransaction2 `xml:"IntrBk,omitempty"`
+}
+
+// ResolutionOfInvestigationV09 - Fixed to match XSD from camt.029.001.09
 type ResolutionOfInvestigationV09 struct {
 	Assignment            CaseAssignment5            `xml:"Assgnmt"`
 	ResolvedCase          *Case5                     `xml:"RslvdCase,omitempty"`
-	Status                InvestigationStatus5       `xml:"Sts"`
+	Status                InvestigationStatus5       `xml:"Sts"`                    // FIXED: now uses Choice version
 	CancellationDetails   []UnderlyingTransaction22  `xml:"CxlDtls,omitempty"`
-	ModificationDetails   *PaymentTransaction91      `xml:"ModDtls,omitempty"`
-	ClaimNonReceipt       *ClaimNonReceipt2          `xml:"ClmNonRct,omitempty"`
+	ModificationDetails   *PaymentTransaction91      `xml:"ModDtls,omitempty"`      // FIXED: PaymentTransaction91 matches PaymentTransaction107 XSD structure
+	ClaimNonReceiptDetails *ClaimNonReceipt2         `xml:"ClmNonRctDtls,omitempty"` // FIXED: was ClmNonRct, now ClmNonRctDtls with Choice
 	StatementDetails      *StatementResolutionEntry4 `xml:"StmtDtls,omitempty"`
-	CorrectionTransaction *CorrectiveTransaction4    `xml:"CrrctnTx,omitempty"`
-	ResolutionRelatedInfo *ResolutionData2           `xml:"RsltnRltdInf,omitempty"`
-	SupplementaryData     []SupplementaryData        `xml:"SplmtryData,omitempty"`
+	CorrectionTransaction *CorrectiveTransaction4    `xml:"CrrctnTx,omitempty"`     // FIXED: now uses Choice version
+	ResolutionRelatedInfo *ResolutionData1           `xml:"RsltnRltdInf,omitempty"` // FIXED: was ResolutionData2, now ResolutionData1
+	SupplementaryData     []SupplementaryData1       `xml:"SplmtryData,omitempty"`  // FIXED: was SupplementaryData, now SupplementaryData1
 }
 
 // CreditorPaymentActivationRequestV07 - pain.013.001.07
@@ -2102,15 +2224,6 @@ type ReportingRequest5 struct {
 	Servicer          *BranchAndFinancialInstitutionIdentification6 `xml:"AcctSvcr,omitempty"`
 }
 
-// UnableToApplyJustification3 - Justification for inability to apply
-type UnableToApplyJustification3 struct {
-	OriginalMessageIdentification string                        `xml:"OrgnlMsgId"`
-	OriginalMessageNameID         string                        `xml:"OrgnlMsgNmId"`
-	OriginalCreationDateTime      *time.Time                    `xml:"OrgnlCreDtTm,omitempty"`
-	OriginalNumberOfTransactions  *string                       `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum            *float64                      `xml:"OrgnlCtrlSum,omitempty"`
-	UnableToApplyDetails          []UnableToApplyIncorrectInfo4 `xml:"UblToApplyDtls"`
-}
 
 // PaymentComplementaryInfo9 - Additional payment information
 type PaymentComplementaryInfo9 struct {
@@ -2129,17 +2242,6 @@ type PaymentComplementaryInfo9 struct {
 	CreditorAgent           *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 }
 
-// InvestigationStatus5 - Status of an investigation
-type InvestigationStatus5 struct {
-	ConfirmationStatus *string                      `xml:"ConfSts,omitempty"`   // ExternalInvestigationExecutionConfirmation1Code
-	ModificationStatus *string                      `xml:"ModSts,omitempty"`    // ModificationStatus
-	CancellationStatus *string                      `xml:"CxlSts,omitempty"`    // CancellationStatus
-	AcceptedStatus     *string                      `xml:"AccptdSts,omitempty"` // AcceptedStatus
-	PendingStatus      *PendingStatus4              `xml:"PndgSts,omitempty"`
-	RejectedStatus     *RejectionReason31           `xml:"RjctdSts,omitempty"`
-	DuplicateStatus    *DuplicateStatus             `xml:"DplctSts,omitempty"`
-	ProprietaryStatus  *ProprietaryStatusAndReason6 `xml:"PrtrySts,omitempty"`
-}
 
 // ModificationStatusReason1 - Choice for modification status reason
 type ModificationStatusReason1 struct {
@@ -2200,12 +2302,6 @@ type PaymentTransaction91 struct {
 	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
-// ClaimNonReceipt2 - Claim for non-receipt of funds
-type ClaimNonReceipt2 struct {
-	DateAndPlaceOfBirth    *DateAndPlaceOfBirth1    `xml:"DtAndPlcOfBirth,omitempty"`
-	ContactDetails         *Contact4                `xml:"CtctDtls,omitempty"`
-	MissingOrIncorrectInfo *MissingOrIncorrectInfo3 `xml:"MssngOrIncrrctInf,omitempty"`
-}
 
 // StatementResolutionEntry4 - Statement resolution entry information
 type StatementResolutionEntry4 struct {
@@ -2217,23 +2313,6 @@ type StatementResolutionEntry4 struct {
 	Statement                        []StatementResolutionEntry4 `xml:"Stmt,omitempty"`
 }
 
-// CorrectiveTransaction4 - Corrective transaction information
-type CorrectiveTransaction4 struct {
-	InstructionID             *string                                       `xml:"InstrId,omitempty"`
-	EndToEndID                *string                                       `xml:"EndToEndId,omitempty"`
-	TransactionID             *string                                       `xml:"TxId,omitempty"`
-	UETR                      *string                                       `xml:"UETR,omitempty"`
-	InterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount            `xml:"IntrBkSttlmAmt,omitempty"`
-	InterbankSettlementDate   *time.Time                                    `xml:"IntrBkSttlmDt,omitempty"`
-	RequestedCollectionDate   *time.Time                                    `xml:"ReqdColltnDt,omitempty"`
-	RequestedExecutionDate    *time.Time                                    `xml:"ReqdExctnDt,omitempty"`
-	Debtor                    *PartyIdentification135                       `xml:"Dbtr,omitempty"`
-	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
-	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
-	Creditor                  *PartyIdentification135                       `xml:"Cdtr,omitempty"`
-	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
-}
 
 // ResolutionData2 - Resolution data for investigation
 type ResolutionData2 struct {
@@ -3489,14 +3568,14 @@ type ModificationReason2 struct {
 
 // UnableToApplyMissing1 - Unable to apply missing information
 type UnableToApplyMissing1 struct {
-	Code        *string `xml:"Cd,omitempty"`    // UnableToApplyMissingInformation3Code
-	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+	Code                   string  `xml:"Cd"`                   // UnableToApplyMissingInformation3Code - Required
+	AdditionalMissingInfo  *string `xml:"AddtlMssngInf,omitempty"` // Max140Text
 }
 
 // UnableToApplyIncorrect1 - Unable to apply incorrect information
 type UnableToApplyIncorrect1 struct {
-	Code        *string `xml:"Cd,omitempty"`    // UnableToApplyIncorrectInfo4Code
-	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+	Code                     string  `xml:"Cd"`                     // UnableToApplyIncorrectInformation4Code - Required
+	AdditionalIncorrectInfo  *string `xml:"AddtlIncrrctInf,omitempty"` // Max140Text
 }
 
 // GenericIdentification30 - Generic identification with exact 4 alphanumeric text
