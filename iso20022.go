@@ -973,7 +973,7 @@ type DocumentAdjustment1 struct {
 
 // DateAndDateTime2 - Choice between date or datetime from camt.029.001.09 XSD
 type DateAndDateTime2 struct {
-	Date     *time.Time `xml:"Dt,omitempty"`   // ISODate
+	Date     *string    `xml:"Dt,omitempty"`   // ISODate
 	DateTime *time.Time `xml:"DtTm,omitempty"` // ISODateTime
 }
 
@@ -1165,7 +1165,7 @@ type StructuredRemittanceInfo struct {
 type ReferredDocumentInfo struct {
 	Type        *ReferredDocumentType `xml:"Tp,omitempty"`
 	Number      *string               `xml:"Nb,omitempty"`
-	RelatedDate *time.Time            `xml:"RltdDt,omitempty"`
+	RelatedDate *string               `xml:"RltdDt,omitempty"`
 	LineDetails []DocumentLineInfo    `xml:"LineDtls,omitempty"`
 }
 
@@ -1188,7 +1188,7 @@ type DocumentLineInfo struct {
 type DocumentLineIdentification struct {
 	Type        *DocumentLineType `xml:"Tp,omitempty"`
 	Number      *string           `xml:"Nb,omitempty"`
-	RelatedDate *time.Time        `xml:"RltdDt,omitempty"`
+	RelatedDate *string           `xml:"RltdDt,omitempty"`
 }
 
 type DocumentLineType struct {
@@ -1279,7 +1279,7 @@ type Garnishment struct {
 	Garnishee                       *PartyIdentification               `xml:"Grnshee,omitempty"`
 	GarnishmentAdministrator        *PartyIdentification               `xml:"GrnshmtAdmstr,omitempty"`
 	ReferenceNumber                 *string                            `xml:"RefNb,omitempty"`
-	Date                            *time.Time                         `xml:"Dt,omitempty"`
+	Date                            *string                            `xml:"Dt,omitempty"`
 	RemittedAmount                  *ActiveOrHistoricCurrencyAndAmount `xml:"RmtdAmt,omitempty"`
 	FamilyMedicalInsuranceIndicator *bool                              `xml:"FmlyMdclInsrncInd,omitempty"`
 	EmployeeTerminationIndicator    *bool                              `xml:"MplyeeTermntnInd,omitempty"`
@@ -1353,7 +1353,7 @@ type RegulatoryAuthority2 struct {
 
 type StructuredRegulatoryReporting3 struct {
 	Type        *string                            `xml:"Tp,omitempty"`
-	Date        *time.Time                         `xml:"Dt,omitempty"`
+	Date        *string                            `xml:"Dt,omitempty"`
 	Country     *string                            `xml:"Ctry,omitempty"`
 	Code        *string                            `xml:"Cd,omitempty"`
 	Amount      *ActiveOrHistoricCurrencyAndAmount `xml:"Amt,omitempty"`
@@ -1515,7 +1515,7 @@ type InvestigationStatus5 struct {
 
 // ClaimNonReceiptDetails - Actual claim details from camt.029.001.09 XSD
 type ClaimNonReceiptDetails struct {
-	DateProcessed     time.Time                                     `xml:"DtPrcd"` // ISODate - Required
+	DateProcessed     string                                        `xml:"DtPrcd"` // ISODate - Required
 	OriginalNextAgent *BranchAndFinancialInstitutionIdentification6 `xml:"OrgnlNxtAgt,omitempty"`
 }
 
@@ -1817,7 +1817,7 @@ type CreditTransferTransactionInfo35 struct {
 	PaymentID                    PaymentIdentification                        `xml:"PmtId"`
 	PaymentTypeInfo              *PaymentTypeInfo                             `xml:"PmtTpInf,omitempty"`
 	InterbankSettlementAmount    ActiveCurrencyAndAmount                      `xml:"IntrBkSttlmAmt"`
-	InterbankSettlementDate      *time.Time                                   `xml:"IntrBkSttlmDt,omitempty"`
+	InterbankSettlementDate      *string                                      `xml:"IntrBkSttlmDt,omitempty"`
 	SettlementPriority           *string                                      `xml:"SttlmPrty,omitempty"`
 	SettlementTimeIndication     *SettlementDateTimeIndication                `xml:"SttlmTmIndctn,omitempty"`
 	SettlementTimeRequest        *SettlementTimeRequest                       `xml:"SttlmTmReq,omitempty"`
@@ -1870,7 +1870,7 @@ type PaymentTransactionInfo51 struct {
 	OriginalClearingSystemReference   *string                            `xml:"OrgnlClrSysRef,omitempty"`
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
 	ReturnedInterbankSettlementAmount ActiveCurrencyAndAmount            `xml:"RtrdIntrBkSttlmAmt"`
-	InterbankSettlementDate           *time.Time                         `xml:"IntrBkSttlmDt,omitempty"`
+	InterbankSettlementDate           *string                            `xml:"IntrBkSttlmDt,omitempty"`
 	ReturnedInstructedAmount          *ActiveOrHistoricCurrencyAndAmount `xml:"RtrdInstdAmt,omitempty"`
 	ExchangeRate                      *float64                           `xml:"XchgRate,omitempty"`
 	CompensationAmount                *ActiveOrHistoricCurrencyAndAmount `xml:"CompstnAmt,omitempty"`
@@ -2273,7 +2273,7 @@ type ResolutionData1 struct {
 	TransactionID             *string                            `xml:"TxId,omitempty"`       // Max35Text
 	UETR                      *string                            `xml:"UETR,omitempty"`       // UUIDv4Identifier
 	InterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"IntrBkSttlmAmt,omitempty"`
-	InterbankSettlementDate   *time.Time                         `xml:"IntrBkSttlmDt,omitempty"` // ISODate
+	InterbankSettlementDate   *string                            `xml:"IntrBkSttlmDt,omitempty"` // ISODate
 	ClearingChannel           *string                            `xml:"ClrChanl,omitempty"`      // ClearingChannel2Code
 	Compensation              *Compensation2                     `xml:"Compstn,omitempty"`
 	Charges                   []Charges7                         `xml:"Chrgs,omitempty"`
@@ -2315,7 +2315,7 @@ type ResolutionData2 struct {
 	TransactionID             *string                            `xml:"TxId,omitempty"`
 	UETR                      *string                            `xml:"UETR,omitempty"`
 	InterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"IntrBkSttlmAmt,omitempty"`
-	InterbankSettlementDate   *time.Time                         `xml:"IntrBkSttlmDt,omitempty"`
+	InterbankSettlementDate   *string                            `xml:"IntrBkSttlmDt,omitempty"`
 	ClearingChannel           *string                            `xml:"ClrChanl,omitempty"`
 	DebtorName                *string                            `xml:"DbtrNm,omitempty"`
 	CreditorName              *string                            `xml:"CdtrNm,omitempty"`
@@ -2330,7 +2330,7 @@ type PaymentInstruction31 struct {
 	NumberOfTransactions      *string                                       `xml:"NbOfTxs,omitempty"` // Max15NumericText
 	ControlSum                *float64                                      `xml:"CtrlSum,omitempty"`
 	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
-	RequestedExecutionDate    *time.Time                                    `xml:"ReqdExctnDt,omitempty"`
+	RequestedExecutionDate    *string                                       `xml:"ReqdExctnDt,omitempty"`
 	Pooler                    *PartyIdentification135                       `xml:"Poolgr,omitempty"`
 	Debtor                    *PartyIdentification135                       `xml:"Dbtr,omitempty"`
 	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
@@ -2388,9 +2388,9 @@ type AcknowledgementOrError2 struct {
 type OriginalTransactionReference28 struct {
 	InterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount            `xml:"IntrBkSttlmAmt,omitempty"`
 	Amount                    *AmountType4                                  `xml:"Amt,omitempty"`
-	InterbankSettlementDate   *time.Time                                    `xml:"IntrBkSttlmDt,omitempty"`
-	RequestedCollectionDate   *time.Time                                    `xml:"ReqdColltnDt,omitempty"`
-	RequestedExecutionDate    *time.Time                                    `xml:"ReqdExctnDt,omitempty"`
+	InterbankSettlementDate   *string                                       `xml:"IntrBkSttlmDt,omitempty"`
+	RequestedCollectionDate   *string                                       `xml:"ReqdColltnDt,omitempty"`
+	RequestedExecutionDate    *string                                       `xml:"ReqdExctnDt,omitempty"`
 	CreditorSchemeID          *PartyIdentification135                       `xml:"CdtrSchmeId,omitempty"`
 	SettlementInfo            *SettlementInstruction7                       `xml:"SttlmInf,omitempty"`
 	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
@@ -3446,7 +3446,7 @@ type TransactionDates3 struct {
 	AcceptanceDateTime                  *time.Time         `xml:"AccptncDtTm,omitempty"`            // ISODateTime
 	TradeActivityContractSettlementDate *string            `xml:"TradActvtyCtrctSttlmDt,omitempty"` // ISODate
 	TradeDate                           *string            `xml:"TradDt,omitempty"`                 // ISODate
-	InterbankSettlementDate             *time.Time         `xml:"IntrBkSttlmDt,omitempty"`          // ISODate
+	InterbankSettlementDate             *string            `xml:"IntrBkSttlmDt,omitempty"`          // ISODate
 	StartDate                           *string            `xml:"StartDt,omitempty"`                // ISODate
 	EndDate                             *string            `xml:"EndDt,omitempty"`                  // ISODate
 	TransactionDateTime                 *time.Time         `xml:"TxDtTm,omitempty"`                 // ISODateTime
