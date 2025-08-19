@@ -1738,10 +1738,10 @@ type GroupHeader90 struct {
 }
 
 type GroupHeader91 struct {
-	MessageID        string                                       `xml:"MsgId"`
-	CreatedDateTime  *time.Time                                   `xml:"CreDtTm,omitempty"`
-	InstructingAgent *BranchAndFinancialInstitutionIdentification `xml:"InstgAgt,omitempty"`
-	InstructedAgent  *BranchAndFinancialInstitutionIdentification `xml:"InstdAgt,omitempty"`
+	MessageID        string                                        `xml:"MsgId"`
+	CreatedDateTime  time.Time                                     `xml:"CreDtTm"`
+	InstructingAgent *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
+	InstructedAgent  *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
 }
 
 type GroupHeader81 struct {
@@ -2068,9 +2068,9 @@ type PaymentReturnReason5 struct {
 }
 
 type StatusReasonInfo12 struct {
-	Originator            *PartyIdentification `xml:"Orgtr,omitempty"`
-	Reason                *StatusReason6       `xml:"Rsn,omitempty"`
-	AdditionalInformation []string             `xml:"AddtlInf,omitempty"`
+	Originator            *PartyIdentification135 `xml:"Orgtr,omitempty"`
+	Reason                *StatusReason62         `xml:"Rsn,omitempty"`
+	AdditionalInformation []string                `xml:"AddtlInf,omitempty"`
 }
 
 type NumberOfTransactionsPerStatus5 struct {
@@ -2694,6 +2694,11 @@ type StatusReason6 struct {
 	CancellationReason    *CancellationReason33 `xml:"CxlRsn,omitempty"`
 	ModificationReason    *ModificationReason2  `xml:"ModRsn,omitempty"`
 	AdditionalInformation []string              `xml:"AddtlInf,omitempty"` // Max105Text
+}
+
+type StatusReason62 struct {
+	Code        *string `xml:"Cd,omitempty"`    // ExternalStatusReason1Code
+	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
 }
 
 // Charges2 - Charges information
