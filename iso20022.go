@@ -300,6 +300,13 @@ type ActiveOrHistoricCurrencyAndAmount struct {
 	Currency string  `xml:"Ccy,attr"`
 }
 
+// Authorization1 represents authorization information using either a standard code or proprietary format.
+// Used in group headers to specify authorization levels and types for payment messages.
+type Authorization1 struct {
+	Code       *string `xml:"Cd,omitempty"`
+	Proprietary *string `xml:"Prtry,omitempty"`
+}
+
 // BranchAndFinancialInstitutionIdentification provides identification for financial institutions and their branches.
 // Contains the core institution identification plus optional branch details for routing
 // and processing payments through specific institutional locations.
@@ -779,10 +786,10 @@ type TaxParty2 struct {
 	TaxID          *string            `xml:"TaxId,omitempty"`
 	RegistrationID *string            `xml:"RegnId,omitempty"`
 	TaxType        *string            `xml:"TaxTp,omitempty"`
-	Authorization  *TaxAuthorisation1 `xml:"Authstn,omitempty"`
+	Authorization  *TaxAuthorization1 `xml:"Authstn,omitempty"`
 }
 
-type TaxAuthorisation1 struct {
+type TaxAuthorization1 struct {
 	Title *string `xml:"Titl,omitempty"`
 	Name  *string `xml:"Nm,omitempty"`
 }
@@ -1731,22 +1738,30 @@ type AdministrationProprietaryMessageV02 struct {
 
 // Transaction and Group Header types
 type GroupHeader90 struct {
-	MessageID        string                                       `xml:"MsgId"`
-	CreatedDateTime  *time.Time                                   `xml:"CreDtTm,omitempty"`
-	InstructingAgent *BranchAndFinancialInstitutionIdentification `xml:"InstgAgt,omitempty"`
-	InstructedAgent  *BranchAndFinancialInstitutionIdentification `xml:"InstdAgt,omitempty"`
+	MessageID                        string                                         `xml:"MsgId"`
+	CreationDateTime                 time.Time                                      `xml:"CreDtTm"`
+	Authorization                    []Authorization1                              `xml:"Authstn,omitempty"`
+	BatchBooking                     *bool                                          `xml:"BtchBookg,omitempty"`
+	NumberOfTransactions             string                                         `xml:"NbOfTxs"`
+	ControlSum                       *float64                                       `xml:"CtrlSum,omitempty"`
+	GroupReturn                      *bool                                          `xml:"GrpRtr,omitempty"`
+	TotalReturnedInterbankSettlementAmount *ActiveCurrencyAndAmount               `xml:"TtlRtrdIntrBkSttlmAmt,omitempty"`
+	InterbankSettlementDate          *string                                        `xml:"IntrBkSttlmDt,omitempty"`
+	SettlementInfo                   SettlementInstruction7                         `xml:"SttlmInf"`
+	InstructingAgent                 *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
+	InstructedAgent                  *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
 }
 
 type GroupHeader91 struct {
-	MessageID        string                                        `xml:"MsgId"`
-	CreatedDateTime  time.Time                                     `xml:"CreDtTm"`
-	InstructingAgent *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
-	InstructedAgent  *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
+	MessageID            string                                        `xml:"MsgId"`
+	CreationDateTime     time.Time                                     `xml:"CreDtTm"`
+	InstructingAgent     *BranchAndFinancialInstitutionIdentification6 `xml:"InstgAgt,omitempty"`
+	InstructedAgent      *BranchAndFinancialInstitutionIdentification6 `xml:"InstdAgt,omitempty"`
 }
 
 type GroupHeader81 struct {
 	MsgID                 string               `xml:"MsgId"`
-	CreatedDateTime       *time.Time           `xml:"CreDtTm,omitempty"`
+	CreationDateTime      *time.Time           `xml:"CreDtTm,omitempty"`
 	MessageRecipient      *PartyIdentification `xml:"MsgRcpt,omitempty"`
 	MessagePagination     *Pagination1         `xml:"MsgPgntn,omitempty"`
 	OriginalBusinessQuery *string              `xml:"OrgnlBizQry,omitempty"`
@@ -1755,7 +1770,7 @@ type GroupHeader81 struct {
 
 type GroupHeader78 struct {
 	MessageID            string                                       `xml:"MsgId"`
-	CreatedDateTime      *time.Time                                   `xml:"CreDtTm,omitempty"`
+	CreationDateTime     *time.Time                                   `xml:"CreDtTm,omitempty"`
 	Authorization        []Authorization1                             `xml:"Authstn,omitempty"`
 	NumberOfTransactions string                                       `xml:"NbOfTxs"`
 	ControlSum           *float64                                     `xml:"CtrlSum,omitempty"`
@@ -1765,7 +1780,7 @@ type GroupHeader78 struct {
 
 type GroupHeader86 struct {
 	MessageID       string                                       `xml:"MsgId"`
-	CreatedDateTime *time.Time                                   `xml:"CreDtTm,omitempty"`
+	CreationDateTime *time.Time                                   `xml:"CreDtTm,omitempty"`
 	InitiatingParty PartyIdentification                          `xml:"InitgPty"`
 	ForwardingAgent *BranchAndFinancialInstitutionIdentification `xml:"FwdgAgt,omitempty"`
 }
@@ -1894,7 +1909,7 @@ type PaymentTransactionInfo50 struct {
 type OriginalGroupHeader17 struct {
 	OriginalMessageID             string                           `xml:"OrgnlMsgId"`
 	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
-	OriginalCreatedDateTime       *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
 	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
 	GroupStatus                   *string                          `xml:"GrpSts,omitempty"`
@@ -1905,7 +1920,7 @@ type OriginalGroupHeader17 struct {
 type OriginalGroupInfo29 struct {
 	OriginalMessageID            string                `xml:"OrgnlMsgId"`
 	OriginalMessageNameID        string                `xml:"OrgnlMsgNmId"`
-	OriginalCreatedDateTime      *time.Time            `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalCreationDateTime     *time.Time            `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions *string               `xml:"OrgnlNbOfTxs,omitempty"`
 	OriginalControlSum           *float64              `xml:"OrgnlCtrlSum,omitempty"`
 	ReturnReason                 *PaymentReturnReason5 `xml:"RtrRsn,omitempty"`
@@ -1915,7 +1930,7 @@ type OriginalGroupInfo29 struct {
 type OriginalGroupInformation27 struct {
 	OriginalMessageID            string     `xml:"OrgnlMsgId"`
 	OriginalMessageNameID        string     `xml:"OrgnlMsgNmId"`
-	OriginalCreatedDateTime      *time.Time `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalCreationDateTime     *time.Time `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions *string    `xml:"OrgnlNbOfTxs,omitempty"`
 	OriginalControlSum           *float64   `xml:"OrgnlCtrlSum,omitempty"`
 }
@@ -1924,7 +1939,7 @@ type OriginalGroupInformation27 struct {
 type OriginalGroupInformation29 struct {
 	OriginalMessageID       string     `xml:"OrgnlMsgId"`
 	OriginalMessageNameID   string     `xml:"OrgnlMsgNmId"`
-	OriginalCreatedDateTime *time.Time `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalCreationDateTime *time.Time `xml:"OrgnlCreDtTm,omitempty"`
 }
 
 // PaymentTransaction110 - for pacs.002.001.10 (exact XSD match)
@@ -1968,7 +1983,7 @@ type PaymentTransaction113 struct {
 type OriginalGroupHeader18 struct {
 	OriginalMessageID       string                 `xml:"OrgnlMsgId"`
 	OriginalMessageNameID   string                 `xml:"OrgnlMsgNmId"`
-	OriginalCreatedDateTime *time.Time             `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalCreationDateTime *time.Time             `xml:"OrgnlCreDtTm,omitempty"`
 	ReturnReasonInfo        []PaymentReturnReason6 `xml:"RtrRsnInf,omitempty"`
 }
 
@@ -2082,11 +2097,6 @@ type NumberOfTransactionsPerStatus5 struct {
 type Pagination1 struct {
 	PageNumber    string `xml:"PgNb"`
 	LastPageIndex bool   `xml:"LastPgInd"`
-}
-
-type Authorization1 struct {
-	Code        *string `xml:"Cd,omitempty"`
-	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
 // AccountReport25 - Bank to Customer Account Report according to CAMT.052.001.08 XSD
