@@ -2686,12 +2686,23 @@ type OriginalGroupInfo3 struct {
 	GroupCancellationID          *string    `xml:"GrpCxlId,omitempty"`
 }
 
+// DatePeriodDetails1 the 'From Date' and 'To Date'.
+type DatePeriodDetails1 struct {
+	FromDate string  `xml:"FrDt"`
+	ToDate   *string `xml:"ToDt,omitempty"`
+}
+
+// TimePeriodDetails1 the 'From Time' and 'To Time'.
+type TimePeriodDetails1 struct {
+	FromTime string  `xml:"FrTm"`
+	ToTime   *string `xml:"ToTm,omitempty"`
+}
+
 // Period2 - Period specification choice
 type Period2 struct {
-	FromDateTime *time.Time `xml:"FrDtTm,omitempty"`
-	ToDateTime   *time.Time `xml:"ToDtTm,omitempty"`
-	FromDate     *string    `xml:"FrDt,omitempty"`
-	ToDate       *string    `xml:"ToDt,omitempty"`
+	FromToDate DatePeriodDetails1  `xml:"FrToDt"`
+	FromToTime *TimePeriodDetails1 `xml:"FrToTm,omitempty"`
+	Type       string              `xml:"Tp"`
 }
 
 // MessageIdentification2 - Message identification
