@@ -2228,7 +2228,7 @@ type UnderlyingTransaction23 struct {
 type ReportingRequest5 struct {
 	ReportingPeriod   *Period2                                      `xml:"RptgPrd,omitempty"`
 	ReportingSequence *SequenceRange1                               `xml:"RptgSeq,omitempty"`
-	RequestedMessage  []MessageIdentification2                      `xml:"ReqdMsgNmId,omitempty"`
+	RequestedMessage  *string                                       `xml:"ReqdMsgNmId,omitempty"`
 	Account           *CashAccount38                                `xml:"Acct,omitempty"`
 	Owner             *Party40                                      `xml:"AcctOwnr,omitempty"`
 	Servicer          *BranchAndFinancialInstitutionIdentification6 `xml:"AcctSvcr,omitempty"`
