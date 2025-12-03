@@ -2227,12 +2227,12 @@ type UnderlyingTransaction23 struct {
 // ReportingRequest5 - Reporting request information
 type ReportingRequest5 struct {
 	Id                                *string                                       `xml:"Id,omitempty"`
-	ReportingPeriod                   *Period2                                      `xml:"RptgPrd,omitempty"`
-	ReportingSequence                 *SequenceRange1                               `xml:"RptgSeq,omitempty"`
 	RequiredMessageNameIdentification string                                        `xml:"ReqdMsgNmId"`
 	Account                           *CashAccount38                                `xml:"Acct,omitempty"`
 	Owner                             *Party40                                      `xml:"AcctOwnr,omitempty"`
 	Servicer                          *BranchAndFinancialInstitutionIdentification6 `xml:"AcctSvcr,omitempty"`
+	ReportingPeriod                   *Period2                                      `xml:"RptgPrd,omitempty"`
+	ReportingSequence                 *SequenceRange1                               `xml:"RptgSeq,omitempty"`
 }
 
 // PaymentComplementaryInfo9 - Additional payment information
