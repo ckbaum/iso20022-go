@@ -2702,7 +2702,7 @@ type TimePeriodDetails1 struct {
 type Period2 struct {
 	FromToDate DatePeriodDetails1  `xml:"FrToDt"`
 	FromToTime *TimePeriodDetails1 `xml:"FrToTm,omitempty"`
-	Type       string              `xml:"Tp"`
+	Type       *string             `xml:"Tp"`
 }
 
 // MessageIdentification2 - Message identification
