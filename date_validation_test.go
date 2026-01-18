@@ -157,16 +157,16 @@ func TestBusinessApplicationHeaderWithStringDateTime(t *testing.T) {
 			},
 			BusinessMessageID: "TEST123",
 			MessageDefinitionID: "pacs.008.001.08",
-			CreationDate: func() *time.Time { t, _ := time.Parse("2006-01-02T15:04:05", "2023-12-25T14:30:45"); return &t }(),
+			CreationDate: func() time.Time { t, _ := time.Parse("2006-01-02T15:04:05", "2023-12-25T14:30:45"); return t }(),
 		}
-		
+
 		err := bah.Validate()
 		if err != nil {
 			t.Logf("BAH validation (some nested validations expected): %v", err)
 		}
-		
+
 		// Should not have errors for CreationDate format
-		if bah.CreationDate == nil {
+		if bah.CreationDate.IsZero() {
 			t.Error("CreationDate should be set")
 		}
 	})

@@ -180,7 +180,7 @@ type Admi99800102Document struct {
 type FIToFICustomerCreditTransferV08 struct {
 	GroupHeader                   GroupHeader93                 `xml:"GrpHdr"`
 	CreditTransferTransactionInfo []CreditTransferTransaction39 `xml:"CdtTrfTxInf"`
-	SupplementaryData             []SupplementaryData           `xml:"SplmtryData,omitempty"`
+	SupplementaryData             []SupplementaryData1          `xml:"SplmtryData,omitempty"`
 }
 
 // GroupHeader93 contains message-level information that applies to all transactions within a PACS.008 message.
@@ -978,7 +978,7 @@ type DocumentAdjustment1 struct {
 	AdditionalInfo       *string                           `xml:"AddtlInf,omitempty"`
 }
 
-// DateAndDateTime2 - Choice between date or datetime from camt.029.001.09 XSD
+// DateAndDateTime2 - Choice between date or datetime
 type DateAndDateTime2 struct {
 	Date     *string    `xml:"Dt,omitempty"`   // ISODate
 	DateTime *time.Time `xml:"DtTm,omitempty"` // ISODateTime
@@ -1414,11 +1414,11 @@ type BankToCustomerDebitCreditNotificationV08 struct {
 
 // CustomerPaymentCancellationRequestV09 - camt.055.001.09
 type CustomerPaymentCancellationRequestV09 struct {
-	Assignment        CaseAssignment5         `xml:"Assgnmt"`
-	Case              *Case5                  `xml:"Case,omitempty"`
-	ControlData       *ControlData1           `xml:"CtrlData,omitempty"`
-	Underlying        UnderlyingTransaction22 `xml:"Undrlyg"`
-	SupplementaryData []SupplementaryData1    `xml:"SplmtryData,omitempty"`
+	Assignment        CaseAssignment5           `xml:"Assgnmt"`
+	Case              *Case5                    `xml:"Case,omitempty"`
+	ControlData       *ControlData1             `xml:"CtrlData,omitempty"`
+	Underlying        []UnderlyingTransaction27 `xml:"Undrlyg"`
+	SupplementaryData []SupplementaryData1      `xml:"SplmtryData,omitempty"`
 }
 
 // FIToFIPaymentCancellationRequestV08 - camt.056.001.08
@@ -1432,7 +1432,7 @@ type FIToFIPaymentCancellationRequestV08 struct {
 
 // AccountReportingRequestV05 - camt.060.001.05
 type AccountReportingRequestV05 struct {
-	GroupHeader       GroupHeader81        `xml:"GrpHdr"`
+	GroupHeader       GroupHeader77        `xml:"GrpHdr"`
 	ReportingRequest  []ReportingRequest5  `xml:"RptgReq"`
 	SupplementaryData []SupplementaryData1 `xml:"SplmtryData,omitempty"`
 }
@@ -1508,7 +1508,7 @@ type AdditionalPaymentInfoV09 struct {
 	Case              *Case5                    `xml:"Case,omitempty"`
 	Underlying        UnderlyingTransaction21   `xml:"Undrlyg"`
 	Info              PaymentComplementaryInfo9 `xml:"Inf"`
-	SupplementaryData []SupplementaryData       `xml:"SplmtryData,omitempty"`
+	SupplementaryData []SupplementaryData1      `xml:"SplmtryData,omitempty"`
 }
 
 // ResolutionOfInvestigationV09 - camt.029.001.09
@@ -1594,33 +1594,36 @@ type ResolutionOfInvestigationV09 struct {
 type CreditorPaymentActivationRequestV07 struct {
 	GroupHeader       GroupHeader78          `xml:"GrpHdr"`
 	PaymentInfo       []PaymentInstruction31 `xml:"PmtInf"`
-	SupplementaryData []SupplementaryData    `xml:"SplmtryData,omitempty"`
+	SupplementaryData []SupplementaryData1   `xml:"SplmtryData,omitempty"`
 }
 
 // CreditorPaymentActivationRequestStatusReportV07 - pain.014.001.07
 type CreditorPaymentActivationRequestStatusReportV07 struct {
-	GroupHeader         GroupHeader86                  `xml:"GrpHdr"`
-	OriginalGroupInfo   OriginalGroupHeader17          `xml:"OrgnlGrpInf"`
-	OriginalPaymentInfo []OriginalPaymentInstruction32 `xml:"OrgnlPmtInf,omitempty"`
-	SupplementaryData   []SupplementaryData            `xml:"SplmtryData,omitempty"`
+	GroupHeader                  GroupHeader87                  `xml:"GrpHdr"`
+	OriginalGroupInfoAndStatus   OriginalGroupInformation30     `xml:"OrgnlGrpInfAndSts"`
+	OriginalPaymentInfoAndStatus []OriginalPaymentInstruction31 `xml:"OrgnlPmtInfAndSts,omitempty"`
+	SupplementaryData            []SupplementaryData1           `xml:"SplmtryData,omitempty"`
 }
 
 // SystemEventNotificationV02 - admi.004.001.02
 type SystemEventNotificationV02 struct {
-	EventInfo         Event2              `xml:"EvtInf"`
-	SupplementaryData []SupplementaryData `xml:"SplmtryData,omitempty"`
+	EventInfo Event2 `xml:"EvtInf"`
 }
 
 // SystemEventAcknowledgementV01 - admi.011.001.01
 type SystemEventAcknowledgementV01 struct {
-	AcknowledgementDetails Acknowledgement1    `xml:"AckDtls"`
+	MessageID              string              `xml:"MsgId"`
+	OriginatorReference    *string             `xml:"OrgtrRef,omitempty"`
+	SettlementSessionID    *string             `xml:"SttlmSsnIdr,omitempty"`
+	AcknowledgementDetails *Event1             `xml:"AckDtls,omitempty"`
 	SupplementaryData      []SupplementaryData `xml:"SplmtryData,omitempty"`
 }
 
 // ResendRequestV01 - admi.006.001.01
 type ResendRequestV01 struct {
-	RequestDetails    ResendSearchCriteria1 `xml:"ReqDtls"`
-	SupplementaryData []SupplementaryData   `xml:"SplmtryData,omitempty"`
+	MessageHeader        MessageHeader7          `xml:"MsgHdr"`
+	ResendSearchCriteria []ResendSearchCriteria2 `xml:"RsndSchCrit"`
+	SupplementaryData    []SupplementaryData     `xml:"SplmtryData,omitempty"`
 }
 
 // MessageHeader10 represents message identification and optional creation date/time for admi.007.001.01
@@ -1730,10 +1733,11 @@ type RejectionReason2 struct {
 
 // AdministrationProprietaryMessageV02 - admi.998.001.02
 type AdministrationProprietaryMessageV02 struct {
-	MessageID         *MessageReference   `xml:"MsgId,omitempty"`
-	Related           *MessageReference   `xml:"Rltd,omitempty"`
-	ProprietaryData   ProprietaryData6    `xml:"PrtryData"`
-	SupplementaryData []SupplementaryData `xml:"SplmtryData,omitempty"`
+	MessageID       *MessageReference `xml:"MsgId,omitempty"`
+	Related         *MessageReference `xml:"Rltd,omitempty"`
+	Previous        *MessageReference `xml:"Prvs,omitempty"`
+	Other           *MessageReference `xml:"Othr,omitempty"`
+	ProprietaryData ProprietaryData6  `xml:"PrtryData"`
 }
 
 // Transaction and Group Header types
@@ -1783,6 +1787,70 @@ type GroupHeader86 struct {
 	CreationDateTime *time.Time                                   `xml:"CreDtTm,omitempty"`
 	InitiatingParty  PartyIdentification                          `xml:"InitgPty"`
 	ForwardingAgent  *BranchAndFinancialInstitutionIdentification `xml:"FwdgAgt,omitempty"`
+}
+
+// GroupHeader87 - Group header for pain.014.001.07
+type GroupHeader87 struct {
+	MessageID        string                                        `xml:"MsgId"`
+	CreationDateTime time.Time                                     `xml:"CreDtTm"`
+	InitiatingParty  PartyIdentification135                        `xml:"InitgPty"`
+	DebtorAgent      *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
+	CreditorAgent    *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+}
+
+// OriginalGroupInformation30 - Original group info for pain.014.001.07
+type OriginalGroupInformation30 struct {
+	OriginalMessageID             string                           `xml:"OrgnlMsgId"`
+	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
+	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	GroupStatus                   *string                          `xml:"GrpSts,omitempty"`
+	StatusReasonInfo              []StatusReasonInfo12             `xml:"StsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus5 `xml:"NbOfTxsPerSts,omitempty"`
+}
+
+// OriginalPaymentInstruction31 - Original payment instruction for pain.014.001.07
+type OriginalPaymentInstruction31 struct {
+	OriginalPaymentInfoID         string                           `xml:"OrgnlPmtInfId"`
+	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	PaymentInfoStatus             *string                          `xml:"PmtInfSts,omitempty"`
+	StatusReasonInfo              []StatusReasonInfo12             `xml:"StsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus5 `xml:"NbOfTxsPerSts,omitempty"`
+	TransactionInfoAndStatus      []PaymentTransaction104          `xml:"TxInfAndSts,omitempty"`
+}
+
+// PaymentTransaction104 - Payment transaction status for pain.014.001.07
+type PaymentTransaction104 struct {
+	StatusID                     *string                         `xml:"StsId,omitempty"`
+	OriginalInstructionID        *string                         `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID           *string                         `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalUETR                 *string                         `xml:"OrgnlUETR,omitempty"`
+	TransactionStatus            *string                         `xml:"TxSts,omitempty"`
+	StatusReasonInfo             []StatusReasonInfo12            `xml:"StsRsnInf,omitempty"`
+	AcceptanceDateTime           *time.Time                      `xml:"AccptncDtTm,omitempty"`
+	AccountServicerReference     *string                         `xml:"AcctSvcrRef,omitempty"`
+	ClearingSystemReference      *string                         `xml:"ClrSysRef,omitempty"`
+	OriginalTransactionReference *OriginalTransactionReference29 `xml:"OrgnlTxRef,omitempty"`
+}
+
+// OriginalTransactionReference29 - Original transaction reference for pain.014.001.07
+type OriginalTransactionReference29 struct {
+	Amount                 *AmountType4                                  `xml:"Amt,omitempty"`
+	RequestedExecutionDate *DateAndDateTime2                             `xml:"ReqdExctnDt,omitempty"`
+	ExpiryDate             *DateAndDateTime2                             `xml:"XpryDt,omitempty"`
+	PaymentTypeInfo        *PaymentTypeInfo                              `xml:"PmtTpInf,omitempty"`
+	PaymentMethod          *string                                       `xml:"PmtMtd,omitempty"`
+	RemittanceInfo         *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
+	UltimateDebtor         *PartyIdentification135                       `xml:"UltmtDbtr,omitempty"`
+	Debtor                 *PartyIdentification135                       `xml:"Dbtr,omitempty"`
+	DebtorAccount          *CashAccount38                                `xml:"DbtrAcct,omitempty"`
+	DebtorAgent            *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
+	CreditorAgent          *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+	Creditor               *PartyIdentification135                       `xml:"Cdtr,omitempty"`
+	CreditorAccount        *CashAccount38                                `xml:"CdtrAcct,omitempty"`
+	UltimateCreditor       *PartyIdentification135                       `xml:"UltmtCdtr,omitempty"`
 }
 
 // Transaction information types
@@ -2050,6 +2118,16 @@ type OriginalTransactionReference32 struct {
 }
 
 // Additional base types
+
+// Event1 - Event details for admi.011.001.01
+type Event1 struct {
+	EventCode        string     `xml:"EvtCd"`
+	EventParameter   []string   `xml:"EvtParam,omitempty"`
+	EventDescription *string    `xml:"EvtDesc,omitempty"`
+	EventTime        *time.Time `xml:"EvtTm,omitempty"`
+}
+
+// Event2 - Event details for admi.004.001.02
 type Event2 struct {
 	EventCode        string     `xml:"EvtCd"`
 	EventParameter   []string   `xml:"EvtParam,omitempty"`
@@ -2224,6 +2302,43 @@ type UnderlyingTransaction23 struct {
 	TransactionInfo                  []PaymentTransaction106 `xml:"TxInf,omitempty"`
 }
 
+// UnderlyingTransaction27 - Underlying transaction for camt.055.001.09
+type UnderlyingTransaction27 struct {
+	OriginalGroupInfoAndCancellation   *OriginalGroupHeader15         `xml:"OrgnlGrpInfAndCxl,omitempty"`
+	OriginalPaymentInfoAndCancellation []OriginalPaymentInstruction36 `xml:"OrgnlPmtInfAndCxl,omitempty"`
+}
+
+// OriginalPaymentInstruction36 - Original payment instruction for camt.055.001.09
+type OriginalPaymentInstruction36 struct {
+	OriginalPaymentInfoCancellationID *string                      `xml:"OrgnlPmtInfCxlId,omitempty"`
+	ResolvedCase                      *Case5                       `xml:"RslvdCase,omitempty"`
+	OriginalPaymentInfoID             string                       `xml:"OrgnlPmtInfId"`
+	OriginalGroupInfo                 *OriginalGroupInformation29  `xml:"OrgnlGrpInf,omitempty"`
+	NumberOfTransactions              *string                      `xml:"NbOfTxs,omitempty"`
+	ControlSum                        *float64                     `xml:"CtrlSum,omitempty"`
+	PaymentInfoCancellation           *bool                        `xml:"PmtInfCxl,omitempty"`
+	CancellationReasonInfo            []PaymentCancellationReason5 `xml:"CxlRsnInf,omitempty"`
+	TransactionInfo                   []PaymentTransaction109      `xml:"TxInf,omitempty"`
+}
+
+// PaymentTransaction109 - Payment transaction for camt.055.001.09
+type PaymentTransaction109 struct {
+	CancellationID               *string                         `xml:"CxlId,omitempty"`
+	Case                         *Case5                          `xml:"Case,omitempty"`
+	OriginalInstructionID        *string                         `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID           *string                         `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalUETR                 *string                         `xml:"OrgnlUETR,omitempty"`
+	CancellationReasonInfo       []PaymentCancellationReason5    `xml:"CxlRsnInf,omitempty"`
+	OriginalTransactionReference *OriginalTransactionReference28 `xml:"OrgnlTxRef,omitempty"`
+}
+
+// GroupHeader77 - Group header for camt.060.001.05
+type GroupHeader77 struct {
+	MessageID        string    `xml:"MsgId"`
+	CreationDateTime time.Time `xml:"CreDtTm"`
+	MessageSender    *Party40  `xml:"MsgSndr,omitempty"`
+}
+
 // ReportingRequest5 - Reporting request information
 type ReportingRequest5 struct {
 	Id                                *string                                       `xml:"Id,omitempty"`
@@ -2306,8 +2421,8 @@ type PaymentTransaction91 struct {
 	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`        // NEW
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"` // NEW
 	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
-	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40Choice
-	Assignee                          *Party40                           `xml:"Assgne,omitempty"` // NEW: Party40Choice
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40
+	Assignee                          *Party40                           `xml:"Assgne,omitempty"` // NEW: Party40
 	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
@@ -2365,14 +2480,50 @@ type OriginalPaymentInstruction32 struct {
 	SupplementaryData                 []SupplementaryData1               `xml:"SplmtryData,omitempty"`
 }
 
-// ResendSearchCriteria1 - Search criteria for resend request
-type ResendSearchCriteria1 struct {
-	MessageNameID     []string         `xml:"MsgNmId,omitempty"`   // Max35Text
-	BusinessMessageID []string         `xml:"BizMsgIdr,omitempty"` // Max35Text
-	CreationDateTime  *DateTimePeriod1 `xml:"CreDtTm,omitempty"`
-	FileReference     []string         `xml:"FileRef,omitempty"` // Max35Text
-	Originator        []Party44        `xml:"Orgtr,omitempty"`
-	Destination       []Party44        `xml:"Dest,omitempty"`
+// MessageHeader7 - Message header for admi.006.001.01
+type MessageHeader7 struct {
+	MessageID             string                  `xml:"MsgId"`
+	CreationDateTime      *time.Time              `xml:"CreDtTm,omitempty"`
+	RequestType           *RequestType4           `xml:"ReqTp,omitempty"`
+	OriginalBusinessQuery *OriginalBusinessQuery1 `xml:"OrgnlBizQry,omitempty"`
+	QueryName             *string                 `xml:"QryNm,omitempty"`
+}
+
+// RequestType4 - Request type choice for MessageHeader7
+type RequestType4 struct {
+	PaymentControl *string                 `xml:"PmtCtrl,omitempty"`
+	Enquiry        *string                 `xml:"Enqry,omitempty"`
+	Proprietary    *GenericIdentification1 `xml:"Prtry,omitempty"`
+}
+
+// GenericIdentification1 - Generic identification
+type GenericIdentification1 struct {
+	ID         string  `xml:"Id"`
+	SchemeName *string `xml:"SchmeNm,omitempty"`
+	Issuer     *string `xml:"Issr,omitempty"`
+}
+
+// OriginalBusinessQuery1 - Original business query reference
+type OriginalBusinessQuery1 struct {
+	MessageID        string     `xml:"MsgId"`
+	MessageNameID    *string    `xml:"MsgNmId,omitempty"`
+	CreationDateTime *time.Time `xml:"CreDtTm,omitempty"`
+}
+
+// ResendSearchCriteria2 - Search criteria for admi.006.001.01
+type ResendSearchCriteria2 struct {
+	BusinessDate          *string                `xml:"BizDt,omitempty"`
+	SequenceNumber        *string                `xml:"SeqNb,omitempty"`
+	SequenceRange         *SequenceRange1        `xml:"SeqRg,omitempty"`
+	OriginalMessageNameID *string                `xml:"OrgnlMsgNmId,omitempty"`
+	FileReference         *string                `xml:"FileRef,omitempty"`
+	Recipient             PartyIdentification136 `xml:"Rcpt"`
+}
+
+// SequenceRange1Admi - Sequence range for admi.006.001.01
+type SequenceRange1Admi struct {
+	FromSequence string `xml:"FrSeq"`
+	ToSequence   string `xml:"ToSeq"`
 }
 
 // RequestHandling1 - Request handling information
@@ -2426,10 +2577,11 @@ type OriginalTransactionReference28 struct {
 type OriginalTransactionReference31 = OriginalTransactionReference28
 
 type SequenceRange1 struct {
-	FromSequence     *string  `xml:"FrSeq,omitempty"`
-	ToSequence       *string  `xml:"ToSeq,omitempty"`
-	EqualSequence    *string  `xml:"EQSeq,omitempty"`
-	NotEqualSequence []string `xml:"NEQSeq,omitempty"`
+	FromSequence     *string              `xml:"FrSeq,omitempty"`
+	ToSequence       *string              `xml:"ToSeq,omitempty"`
+	FromToSequence   []SequenceRange1Admi `xml:"FrToSeq,omitempty"`
+	EqualSequence    *string              `xml:"EQSeq,omitempty"`
+	NotEqualSequence []string             `xml:"NEQSeq,omitempty"`
 }
 
 type DateTimePeriod1 struct {
@@ -3199,9 +3351,10 @@ func (d *Admi01100101Document) Validate() error {
 	if err := validateRequired(d.SystemEventAcknowledgement, "SysEvtAck"); err != nil {
 		errs = append(errs, err.(ValidationError))
 	} else {
-		// Validate nested structure - placeholder for now
-		// TODO: Implement full validation based on XSD constraints
-		_ = d.SystemEventAcknowledgement
+		// Validate required MessageID (MsgId)
+		if err := validateRequired(d.SystemEventAcknowledgement.MessageID, "SysEvtAck.MsgId"); err != nil {
+			errs = append(errs, err.(ValidationError))
+		}
 	}
 
 	if errs.HasErrors() {
@@ -4382,7 +4535,7 @@ type BusinessApplicationHeaderV02 struct {
 	MessageDefinitionID    string                        `xml:"MsgDefIdr"`            // Message definition identifier (Max35Text)
 	BusinessService        *string                       `xml:"BizSvc,omitempty"`     // Business service identifier (Max35Text)
 	MarketPractice         *ImplementationSpecification1 `xml:"MktPrctc,omitempty"`   // Market practice specification
-	CreationDate           *time.Time                    `xml:"CreDt,omitempty"`      // Creation date and time (ISODateTime)
+	CreationDate           time.Time                     `xml:"CreDt"`                // Creation date and time (ISODateTime) - required
 	BusinessProcessingDate *time.Time                    `xml:"BizPrcgDt,omitempty"`  // Business processing date (ISODateTime)
 	CopyDuplicate          *CopyDuplicate1Code           `xml:"CpyDplct,omitempty"`   // Copy/duplicate indicator
 	PossibleDuplicate      *bool                         `xml:"PssblDplct,omitempty"` // Possible duplicate flag (YesNoIndicator)
@@ -4423,7 +4576,7 @@ type BusinessApplicationHeader5 struct {
 	BusinessMessageID   string                       `xml:"BizMsgIdr"`            // Unique business message identifier
 	MessageDefinitionID string                       `xml:"MsgDefIdr"`            // Message definition identifier
 	BusinessService     *string                      `xml:"BizSvc,omitempty"`     // Business service identifier
-	CreationDate        *time.Time                   `xml:"CreDt,omitempty"`      // Creation date and time
+	CreationDate        time.Time                    `xml:"CreDt"`                // Creation date and time - required
 	CopyDuplicate       *CopyDuplicate1Code          `xml:"CpyDplct,omitempty"`   // Copy/duplicate indicator
 	PossibleDuplicate   *bool                        `xml:"PssblDplct,omitempty"` // Possible duplicate flag
 	Priority            *BusinessMessagePriorityCode `xml:"Prty,omitempty"`       // Message priority
@@ -4469,11 +4622,9 @@ func (b *BusinessApplicationHeaderV02) Validate() error {
 		errs = append(errs, ValidationError{Field: "To", Message: err.Error()})
 	}
 
-	// CreationDate is required (string pointer value check)
-	if b.CreationDate == nil {
+	// CreationDate is required - check for zero value
+	if b.CreationDate.IsZero() {
 		errs = append(errs, ValidationError{Field: "CreationDate", Message: "creation date is required"})
-	} else {
-		// time.Time is already validated by Go's type system
 	}
 
 	// Validate optional fields if present
@@ -4592,11 +4743,9 @@ func (b *BusinessApplicationHeader5) Validate() error {
 		errs = append(errs, ValidationError{Field: "To", Message: err.Error()})
 	}
 
-	// CreationDate is required (string pointer value check)
-	if b.CreationDate == nil {
+	// CreationDate is required - check for zero value
+	if b.CreationDate.IsZero() {
 		errs = append(errs, ValidationError{Field: "CreationDate", Message: "creation date is required"})
-	} else {
-		// time.Time is already validated by Go's type system
 	}
 
 	// Validate optional fields if present

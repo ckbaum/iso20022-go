@@ -180,7 +180,7 @@ func TestBusinessApplicationHeader_Structure(t *testing.T) {
 		},
 		BusinessMessageID: "BAH123456789",
 		MessageDefinitionID: "pacs.008.001.08",
-		CreationDate: func() *time.Time { t := time.Now(); return &t }(),
+		CreationDate: time.Now(),
 		Priority: func() *BusinessMessagePriorityCode { p := BusinessMessagePriorityNormal; return &p }(),
 	}
 
@@ -228,7 +228,7 @@ func TestBusinessApplicationHeader_Validation(t *testing.T) {
 		},
 		BusinessMessageID: "BAH123",
 		MessageDefinitionID: "pacs.008.001.08",
-		CreationDate: func() *time.Time { t := time.Now(); return &t }(),
+		CreationDate: time.Now(),
 	}
 	
 	err := validBAH.Validate()
@@ -267,7 +267,7 @@ func TestBusinessApplicationHeader_Validation(t *testing.T) {
 		},
 		BusinessMessageID: "BAH123",
 		MessageDefinitionID: "INVALID.FORMAT", // Wrong format
-		CreationDate: func() *time.Time { t := time.Now(); return &t }(),
+		CreationDate: time.Now(),
 	}
 	
 	err = invalidMsgDef.Validate()
@@ -350,7 +350,7 @@ func TestBusinessApplicationHeaderDocument(t *testing.T) {
 			},
 			BusinessMessageID: "BAH001",
 			MessageDefinitionID: "pacs.008.001.08",
-			CreationDate: &now,
+			CreationDate: now,
 			BusinessProcessingDate: func() *time.Time { t := now.Add(time.Hour); return &t }(),
 			MarketPractice: &ImplementationSpecification1{
 				Registry: stringPtr("ISO20022.org"),
@@ -374,7 +374,7 @@ func TestBusinessApplicationHeaderDocument(t *testing.T) {
 					},
 					BusinessMessageID: "RELATED001",
 					MessageDefinitionID: "pacs.002.001.10",
-					CreationDate: &now,
+					CreationDate: now,
 				},
 			},
 		},
@@ -471,7 +471,7 @@ func TestBusinessApplicationHeaderV02_AllFields(t *testing.T) {
 			Registry: stringPtr("ISO20022.org"),
 			ID:       stringPtr("CBPR+ Cross-Border Payments v1.0"),
 		},
-		CreationDate:           &now,
+		CreationDate:           now,
 		BusinessProcessingDate: &processingTime,
 		CopyDuplicate:          func() *CopyDuplicate1Code { c := CopyDuplicateCodeCopy; return &c }(),
 		PossibleDuplicate:      func() *bool { b := false; return &b }(),
@@ -495,7 +495,7 @@ func TestBusinessApplicationHeaderV02_AllFields(t *testing.T) {
 				BusinessMessageID:   "RELATED_MSG_001",
 				MessageDefinitionID: "pacs.002.001.10",
 				BusinessService:     stringPtr("Status Report"),
-				CreationDate:        func() *time.Time { t := now.Add(-time.Minute); return &t }(),
+				CreationDate:        now.Add(-time.Minute),
 				CopyDuplicate:       func() *CopyDuplicate1Code { c := CopyDuplicateCodeDupl; return &c }(),
 			},
 		},
