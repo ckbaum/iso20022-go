@@ -2171,12 +2171,143 @@ type UnderlyingTransaction21 struct {
 	TransactionInfo            []PaymentTransaction91         `xml:"TxInfAndSts,omitempty"`
 }
 
-// UnderlyingTransaction22 - Similar to UnderlyingTransaction21 but for different message types
+// GroupCancellationStatus1Code - Status code for group cancellations (camt.029)
+type GroupCancellationStatus1Code string
+
+const (
+	GroupCancellationStatusPACR GroupCancellationStatus1Code = "PACR" // PartiallyAcceptedCancellationRequest
+	GroupCancellationStatusRJCR GroupCancellationStatus1Code = "RJCR" // Rejected
+	GroupCancellationStatusACCR GroupCancellationStatus1Code = "ACCR" // AcceptedCancellationRequest
+	GroupCancellationStatusPDCR GroupCancellationStatus1Code = "PDCR" // PendingCancellationRequest
+)
+
+// CancellationIndividualStatus1Code - Individual transaction cancellation status (camt.029)
+type CancellationIndividualStatus1Code string
+
+const (
+	CancellationIndividualStatusRJCR CancellationIndividualStatus1Code = "RJCR" // Rejected
+	CancellationIndividualStatusACCR CancellationIndividualStatus1Code = "ACCR" // Accepted
+	CancellationIndividualStatusPDCR CancellationIndividualStatus1Code = "PDCR" // Pending
+)
+
+// TransactionIndividualStatus1Code - Individual transaction status (camt.029)
+type TransactionIndividualStatus1Code string
+
+const (
+	TransactionIndividualStatusACTC TransactionIndividualStatus1Code = "ACTC" // AcceptedTechnicalValidation
+	TransactionIndividualStatusRJCT TransactionIndividualStatus1Code = "RJCT" // Rejected
+	TransactionIndividualStatusPDNG TransactionIndividualStatus1Code = "PDNG" // Pending
+	TransactionIndividualStatusACCP TransactionIndividualStatus1Code = "ACCP" // AcceptedCustomerProfile
+	TransactionIndividualStatusACSP TransactionIndividualStatus1Code = "ACSP" // AcceptedSettlementInProcess
+	TransactionIndividualStatusACSC TransactionIndividualStatus1Code = "ACSC" // AcceptedSettlementCompleted
+	TransactionIndividualStatusACCR TransactionIndividualStatus1Code = "ACCR" // AcceptedCreditSettlement
+	TransactionIndividualStatusACWC TransactionIndividualStatus1Code = "ACWC" // AcceptedWithChange
+)
+
+// DateAndDateTime2Choice - Choice between date and datetime
+type DateAndDateTime2Choice struct {
+	Date     *string     `xml:"Dt,omitempty"`   // ISODate
+	DateTime *time.Time  `xml:"DtTm,omitempty"` // ISODateTime
+}
+
+// CancellationStatusReason3Choice - Reason for cancellation status (code or proprietary)
+type CancellationStatusReason3Choice struct {
+	Code        *string `xml:"Cd,omitempty"`    // ExternalPaymentCancellationRejection1Code
+	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+}
+
+// CancellationStatusReason4 - Cancellation status reason information from camt.029
+type CancellationStatusReason4 struct {
+	Originator            *PartyIdentification135          `xml:"Orgtr,omitempty"`
+	Reason                *CancellationStatusReason3Choice `xml:"Rsn,omitempty"`
+	AdditionalInformation []string                         `xml:"AddtlInf,omitempty"` // Max105Text, unbounded
+}
+
+// NumberOfTransactionsPerStatus1 - Number of transactions per status from camt.029
+type NumberOfTransactionsPerStatus1 struct {
+	DetailedNumberOfTransactions string                            `xml:"DtldNbOfTxs"`           // Max15NumericText - required
+	DetailedStatus               TransactionIndividualStatus1Code  `xml:"DtldSts"`               // Required
+	DetailedControlSum           *float64                          `xml:"DtldCtrlSum,omitempty"` // DecimalNumber - optional
+}
+
+// NumberOfCancellationsPerStatus1 - Number of cancellations per status from camt.029
+type NumberOfCancellationsPerStatus1 struct {
+	DetailedNumberOfTransactions string                             `xml:"DtldNbOfTxs"`           // Max15NumericText - required
+	DetailedStatus               CancellationIndividualStatus1Code  `xml:"DtldSts"`               // Required
+	DetailedControlSum           *float64                           `xml:"DtldCtrlSum,omitempty"` // DecimalNumber - optional
+}
+
+// Party40Choice - Choice between party and agent (same as Party40)
+type Party40Choice = Party40
+
+// PaymentTransaction103 - Payment transaction within payment instruction from camt.029
+type PaymentTransaction103 struct {
+	CancellationStatusID          *string                         `xml:"CxlStsId,omitempty"`
+	ResolvedCase                  *Case5                          `xml:"RslvdCase,omitempty"`
+	OriginalInstructionID         *string                         `xml:"OrgnlInstrId,omitempty"` // Max35Text
+	OriginalEndToEndID            *string                         `xml:"OrgnlEndToEndId,omitempty"`
+	UETR                          *string                         `xml:"UETR,omitempty"` // UUIDv4Identifier
+	TransactionCancellationStatus *CancellationIndividualStatus1Code `xml:"TxCxlSts,omitempty"`
+	CancellationStatusReasonInfo  []CancellationStatusReason4     `xml:"CxlStsRsnInf,omitempty"`
+	OriginalInstructedAmount      *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlInstdAmt,omitempty"`
+	OriginalRequestedExecutionDate *DateAndDateTime2Choice        `xml:"OrgnlReqdExctnDt,omitempty"`
+	OriginalRequestedCollectionDate *string                       `xml:"OrgnlReqdColltnDt,omitempty"` // ISODate
+	OriginalTransactionReference  *OriginalTransactionReference28 `xml:"OrgnlTxRef,omitempty"`
+}
+
+// PaymentTransaction102 - Payment transaction information from camt.029
+type PaymentTransaction102 struct {
+	CancellationStatusID          *string                             `xml:"CxlStsId,omitempty"`
+	ResolvedCase                  *Case5                              `xml:"RslvdCase,omitempty"`
+	OriginalGroupInfo             *OriginalGroupInformation29         `xml:"OrgnlGrpInf,omitempty"`
+	OriginalInstructionID         *string                             `xml:"OrgnlInstrId,omitempty"` // Max35Text
+	OriginalEndToEndID            *string                             `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalTransactionID         *string                             `xml:"OrgnlTxId,omitempty"`
+	OriginalClearingSystemRef     *string                             `xml:"OrgnlClrSysRef,omitempty"`
+	OriginalUETR                  *string                             `xml:"OrgnlUETR,omitempty"` // UUIDv4Identifier
+	TransactionCancellationStatus *CancellationIndividualStatus1Code  `xml:"TxCxlSts,omitempty"`
+	CancellationStatusReasonInfo  []CancellationStatusReason4         `xml:"CxlStsRsnInf,omitempty"`
+	ResolutionRelatedInfo         *ResolutionData1                    `xml:"RsltnRltdInf,omitempty"`
+	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
+	OriginalInterbankSettlementDate *string                           `xml:"OrgnlIntrBkSttlmDt,omitempty"` // ISODate
+	Assignor                      *Party40Choice                      `xml:"Assgnr,omitempty"`
+	Assignee                      *Party40Choice                      `xml:"Assgne,omitempty"`
+	OriginalTransactionReference  *OriginalTransactionReference28     `xml:"OrgnlTxRef,omitempty"`
+}
+
+// OriginalPaymentInstruction30 - Original payment instruction information from camt.029
+type OriginalPaymentInstruction30 struct {
+	OriginalPaymentInfoCancellationID *string                             `xml:"OrgnlPmtInfCxlId,omitempty"`
+	ResolvedCase                      *Case5                              `xml:"RslvdCase,omitempty"`
+	OriginalPaymentInfoID             string                              `xml:"OrgnlPmtInfId"` // Max35Text - required
+	OriginalGroupInfo                 *OriginalGroupInformation29         `xml:"OrgnlGrpInf,omitempty"`
+	OriginalNumberOfTransactions      *string                             `xml:"OrgnlNbOfTxs,omitempty"` // Max15NumericText
+	OriginalControlSum                *float64                            `xml:"OrgnlCtrlSum,omitempty"` // DecimalNumber
+	PaymentInfoCancellationStatus     *GroupCancellationStatus1Code       `xml:"PmtInfCxlSts,omitempty"`
+	CancellationStatusReasonInfo      []CancellationStatusReason4         `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerCancellationStatus []NumberOfCancellationsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+	TransactionInfoAndStatus          []PaymentTransaction103             `xml:"TxInfAndSts,omitempty"`
+}
+
+// OriginalGroupHeader14 - Original group header information from camt.029
+type OriginalGroupHeader14 struct {
+	OriginalGroupCancellationID  *string                           `xml:"OrgnlGrpCxlId,omitempty"`
+	ResolvedCase                 *Case5                            `xml:"RslvdCase,omitempty"`
+	OriginalMessageID            string                            `xml:"OrgnlMsgId"`    // Max35Text - required
+	OriginalMessageNameID        string                            `xml:"OrgnlMsgNmId"`  // Max35Text - required
+	OriginalCreationDateTime     *time.Time                        `xml:"OrgnlCreDtTm,omitempty"` // ISODateTime
+	OriginalNumberOfTransactions *string                           `xml:"OrgnlNbOfTxs,omitempty"` // Max15NumericText
+	OriginalControlSum           *float64                          `xml:"OrgnlCtrlSum,omitempty"` // DecimalNumber
+	GroupCancellationStatus      *GroupCancellationStatus1Code     `xml:"GrpCxlSts,omitempty"`
+	CancellationStatusReasonInfo []CancellationStatusReason4       `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerCancellationStatus []NumberOfTransactionsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+}
+
+// UnderlyingTransaction22 - Underlying transaction information for camt.029 (Resolution of Investigation)
 type UnderlyingTransaction22 struct {
-	// Simplified structure for now - can be expanded with specific transaction details
-	OriginalGroupInfo          *OriginalGroupInfo3            `xml:"OrgnlGrpInfAndSts,omitempty"`
-	OriginalPaymentInformation []OriginalPaymentInstruction32 `xml:"OrgnlPmtInfAndSts,omitempty"`
-	TransactionInfo            []PaymentTransaction91         `xml:"TxInfAndSts,omitempty"`
+	OriginalGroupInfoAndStatus   *OriginalGroupHeader14           `xml:"OrgnlGrpInfAndSts,omitempty"`
+	OriginalPaymentInfoAndStatus []OriginalPaymentInstruction30   `xml:"OrgnlPmtInfAndSts,omitempty"`
+	TransactionInfoAndStatus     []PaymentTransaction102          `xml:"TxInfAndSts,omitempty"`
 }
 
 // PaymentCancellationReason5 - Reason for payment cancellation from camt.056.001.08 XSD
