@@ -2104,16 +2104,16 @@ type OriginalTransactionReference32 struct {
 	PaymentMethod             *string                                       `xml:"PmtMtd,omitempty"`
 	MandateRelatedInfo        *MandateRelatedInfo14                         `xml:"MndtRltdInf,omitempty"`
 	RemittanceInfo            *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
-	UltimateDebtor            *Party40Choice                                     `xml:"UltmtDbtr,omitempty"`
-	Debtor                    *Party40Choice                                     `xml:"Dbtr,omitempty"`
+	UltimateDebtor            *Party40                                      `xml:"UltmtDbtr,omitempty"`
+	Debtor                    *Party40                                      `xml:"Dbtr,omitempty"`
 	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
 	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
 	DebtorAgentAccount        *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
 	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 	CreditorAgentAccount      *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
-	Creditor                  *Party40Choice                                     `xml:"Cdtr,omitempty"`
+	Creditor                  *Party40                                      `xml:"Cdtr,omitempty"`
 	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	UltimateCreditor          *Party40Choice                                     `xml:"UltmtCdtr,omitempty"`
+	UltimateCreditor          *Party40                                      `xml:"UltmtCdtr,omitempty"`
 	Purpose                   *Purpose2                                     `xml:"Purp,omitempty"`
 }
 
@@ -2223,15 +2223,15 @@ type AccountNotification17 struct {
 // CaseAssignment5 - Case assignment for investigation messages
 type CaseAssignment5 struct {
 	ID               string    `xml:"Id"`      // Max35Text - required
-	Assigner         Party40Choice  `xml:"Assgnr"`  // Required
-	Assignee         Party40Choice  `xml:"Assgne"`  // Required
+	Assigner         Party40   `xml:"Assgnr"`  // Required
+	Assignee         Party40   `xml:"Assgne"`  // Required
 	CreationDateTime time.Time `xml:"CreDtTm"` // ISODateTime - required
 }
 
 // Case5 - Case information for investigation messages
 type Case5 struct {
 	ID                   string  `xml:"Id"`                       // Max35Text - required
-	Creator              Party40Choice`xml:"Cretr"`                    // Required
+	Creator              Party40 `xml:"Cretr"`                    // Required
 	ReopenCaseIndication *bool   `xml:"ReopCaseIndctn,omitempty"` // YesNoIndicator - optional
 }
 
@@ -2251,30 +2251,30 @@ type UnderlyingTransaction21 struct {
 
 // UnderlyingTransaction22 - Underlying transaction for cancellation from camt.029.001.09 XSD
 type UnderlyingTransaction22 struct {
-	OriginalGroupInfo          *OriginalGroupHeader14          `xml:"OrgnlGrpInfAndSts,omitempty"`
-	OriginalPaymentInformation []OriginalPaymentInstruction30  `xml:"OrgnlPmtInfAndSts,omitempty"`
-	TransactionInfo            []PaymentTransaction102         `xml:"TxInfAndSts,omitempty"`
+	OriginalGroupInfo          *OriginalGroupHeader14         `xml:"OrgnlGrpInfAndSts,omitempty"`
+	OriginalPaymentInformation []OriginalPaymentInstruction30 `xml:"OrgnlPmtInfAndSts,omitempty"`
+	TransactionInfo            []PaymentTransaction102        `xml:"TxInfAndSts,omitempty"`
 }
 
 // OriginalGroupHeader14 - Original group header for cancellation from camt.029.001.09 XSD
 type OriginalGroupHeader14 struct {
-	OriginalGroupCancellationID      *string                        `xml:"OrgnlGrpCxlId,omitempty"`
-	ResolvedCase                     *Case5                         `xml:"RslvdCase,omitempty"`
-	OriginalMessageID                string                         `xml:"OrgnlMsgId"`
-	OriginalMessageNameID            string                         `xml:"OrgnlMsgNmId"`
-	OriginalCreationDateTime         *time.Time                     `xml:"OrgnlCreDtTm,omitempty"`
-	OriginalNumberOfTransactions     *string                        `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum               *float64                       `xml:"OrgnlCtrlSum,omitempty"`
-	GroupCancellationStatus          *string                        `xml:"GrpCxlSts,omitempty"` // GroupCancellationStatus1Code
-	CancellationStatusReasonInfo     []CancellationStatusReason4    `xml:"CxlStsRsnInf,omitempty"`
-	NumberOfTransactionsPerStatus    []NumberOfTransactionsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+	OriginalGroupCancellationID   *string                          `xml:"OrgnlGrpCxlId,omitempty"`
+	ResolvedCase                  *Case5                           `xml:"RslvdCase,omitempty"`
+	OriginalMessageID             string                           `xml:"OrgnlMsgId"`
+	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
+	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	GroupCancellationStatus       *string                          `xml:"GrpCxlSts,omitempty"` // GroupCancellationStatus1Code
+	CancellationStatusReasonInfo  []CancellationStatusReason4      `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
 }
 
 // CancellationStatusReason4 - Reason for cancellation status from camt.029.001.09 XSD
 type CancellationStatusReason4 struct {
-	Originator            *PartyIdentification135         `xml:"Orgtr,omitempty"`
+	Originator            *PartyIdentification135          `xml:"Orgtr,omitempty"`
 	Reason                *CancellationStatusReason3Choice `xml:"Rsn,omitempty"`
-	AdditionalInformation []string                        `xml:"AddtlInf,omitempty"` // Max105Text
+	AdditionalInformation []string                         `xml:"AddtlInf,omitempty"` // Max105Text
 }
 
 // CancellationStatusReason3Choice - Choice for cancellation status reason from camt.029.001.09 XSD
@@ -2292,16 +2292,16 @@ type NumberOfTransactionsPerStatus1 struct {
 
 // OriginalPaymentInstruction30 - Original payment instruction for cancellation from camt.029.001.09 XSD
 type OriginalPaymentInstruction30 struct {
-	OriginalPaymentInfoCancellationID *string                             `xml:"OrgnlPmtInfCxlId,omitempty"`
-	ResolvedCase                      *Case5                              `xml:"RslvdCase,omitempty"`
-	OriginalPaymentInfoID             string                              `xml:"OrgnlPmtInfId"`
-	OriginalGroupInfo                 *OriginalGroupInformation29         `xml:"OrgnlGrpInf,omitempty"`
-	OriginalNumberOfTransactions      *string                             `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum                *float64                            `xml:"OrgnlCtrlSum,omitempty"`
-	PaymentInfoCancellationStatus     *string                             `xml:"PmtInfCxlSts,omitempty"` // GroupCancellationStatus1Code
-	CancellationStatusReasonInfo      []CancellationStatusReason4         `xml:"CxlStsRsnInf,omitempty"`
-	NumberOfTransactionsPerStatus     []NumberOfCancellationsPerStatus1   `xml:"NbOfTxsPerCxlSts,omitempty"`
-	TransactionInfo                   []PaymentTransaction103             `xml:"TxInfAndSts,omitempty"`
+	OriginalPaymentInfoCancellationID *string                           `xml:"OrgnlPmtInfCxlId,omitempty"`
+	ResolvedCase                      *Case5                            `xml:"RslvdCase,omitempty"`
+	OriginalPaymentInfoID             string                            `xml:"OrgnlPmtInfId"`
+	OriginalGroupInfo                 *OriginalGroupInformation29       `xml:"OrgnlGrpInf,omitempty"`
+	OriginalNumberOfTransactions      *string                           `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum                *float64                          `xml:"OrgnlCtrlSum,omitempty"`
+	PaymentInfoCancellationStatus     *string                           `xml:"PmtInfCxlSts,omitempty"` // GroupCancellationStatus1Code
+	CancellationStatusReasonInfo      []CancellationStatusReason4       `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus     []NumberOfCancellationsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+	TransactionInfo                   []PaymentTransaction103           `xml:"TxInfAndSts,omitempty"`
 }
 
 // NumberOfCancellationsPerStatus1 - Number of cancellations per status from camt.029.001.09 XSD
@@ -2326,24 +2326,24 @@ type PaymentTransaction102 struct {
 	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
 	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
-	Assignor                          *Party40Choice                     `xml:"Assgnr,omitempty"`
-	Assignee                          *Party40Choice                     `xml:"Assgne,omitempty"`
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"`
+	Assignee                          *Party40                           `xml:"Assgne,omitempty"`
 	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
 // PaymentTransaction103 - Payment transaction for payment info cancellation from camt.029.001.09 XSD
 type PaymentTransaction103 struct {
-	CancellationStatusID          *string                            `xml:"CxlStsId,omitempty"`
-	ResolvedCase                  *Case5                             `xml:"RslvdCase,omitempty"`
-	OriginalInstructionID         *string                            `xml:"OrgnlInstrId,omitempty"`
-	OriginalEndToEndID            *string                            `xml:"OrgnlEndToEndId,omitempty"`
-	UETR                          *string                            `xml:"UETR,omitempty"`
-	TransactionCancellationStatus *string                            `xml:"TxCxlSts,omitempty"` // CancellationIndividualStatus1Code
-	CancellationStatusReasonInfo  []CancellationStatusReason4        `xml:"CxlStsRsnInf,omitempty"`
-	OriginalInstructedAmount      *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlInstdAmt,omitempty"`
-	OriginalRequestedExecutionDate *DateAndDateTime2                 `xml:"OrgnlReqdExctnDt,omitempty"`
-	OriginalRequestedCollectionDate *string                           `xml:"OrgnlReqdColltnDt,omitempty"`
-	OriginalTransactionReference  *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
+	CancellationStatusID            *string                            `xml:"CxlStsId,omitempty"`
+	ResolvedCase                    *Case5                             `xml:"RslvdCase,omitempty"`
+	OriginalInstructionID           *string                            `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID              *string                            `xml:"OrgnlEndToEndId,omitempty"`
+	UETR                            *string                            `xml:"UETR,omitempty"`
+	TransactionCancellationStatus   *string                            `xml:"TxCxlSts,omitempty"` // CancellationIndividualStatus1Code
+	CancellationStatusReasonInfo    []CancellationStatusReason4        `xml:"CxlStsRsnInf,omitempty"`
+	OriginalInstructedAmount        *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlInstdAmt,omitempty"`
+	OriginalRequestedExecutionDate  *DateAndDateTime2                  `xml:"OrgnlReqdExctnDt,omitempty"`
+	OriginalRequestedCollectionDate *string                            `xml:"OrgnlReqdColltnDt,omitempty"`
+	OriginalTransactionReference    *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
 // PaymentCancellationReason5 - Reason for payment cancellation from camt.056.001.08 XSD
@@ -2425,7 +2425,7 @@ type PaymentTransaction109 struct {
 type GroupHeader77 struct {
 	MessageID        string    `xml:"MsgId"`
 	CreationDateTime time.Time `xml:"CreDtTm"`
-	MessageSender    *Party40Choice `xml:"MsgSndr,omitempty"`
+	MessageSender    *Party40  `xml:"MsgSndr,omitempty"`
 }
 
 // ReportingRequest5 - Reporting request information
@@ -2433,7 +2433,7 @@ type ReportingRequest5 struct {
 	Id                                *string                                       `xml:"Id,omitempty"`
 	RequiredMessageNameIdentification string                                        `xml:"ReqdMsgNmId"`
 	Account                           *CashAccount38                                `xml:"Acct,omitempty"`
-	Owner                             *Party40Choice                                     `xml:"AcctOwnr,omitempty"`
+	Owner                             *Party40                                      `xml:"AcctOwnr,omitempty"`
 	Servicer                          *BranchAndFinancialInstitutionIdentification6 `xml:"AcctSvcr,omitempty"`
 	ReportingPeriod                   *Period2                                      `xml:"RptgPrd,omitempty"`
 	ReportingSequence                 *SequenceRange1                               `xml:"RptgSeq,omitempty"`
@@ -2510,7 +2510,7 @@ type PaymentTransaction91 struct {
 	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`        // NEW
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"` // NEW
 	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
-	Assignor                          *Party40Choice                          `xml:"Assgnr,omitempty"` // NEW: Party40Choice	Assignee                          *Party40Choice                          `xml:"Assgne,omitempty"` // NEW: Party40Choice	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40	Assignee                          *Party40                          `xml:"Assgne,omitempty"` // NEW: Party40	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
 // StatementResolutionEntry4 - Statement resolution entry information
@@ -2880,8 +2880,8 @@ type MandateSetupReason1 struct {
 
 // Additional missing types - proper XSD-based implementations
 
-// Party40Choice - Choice between party identification or agent
-type Party40Choice struct {
+// Party40 - Choice between party identification or agent
+type Party40 struct {
 	Party *PartyIdentification135                       `xml:"Pty,omitempty"`
 	Agent *BranchAndFinancialInstitutionIdentification6 `xml:"Agt,omitempty"`
 }
@@ -2890,10 +2890,10 @@ type Party40Choice struct {
 // This includes all parties involved in the payment chain: ultimate debtor/creditor, debtor/creditor,
 // agents at various levels, and intermediary agents for complex routing scenarios.
 type TransactionParties8 struct {
-	UltimateDebtor                   *Party40Choice                                     `xml:"UltmtDbtr,omitempty"`
-	Debtor                           Party40Choice                                      `xml:"Dbtr"`
+	UltimateDebtor                   *Party40                                      `xml:"UltmtDbtr,omitempty"`
+	Debtor                           Party40                                       `xml:"Dbtr"`
 	DebtorAccount                    *CashAccount38                                `xml:"DbtrAcct,omitempty"`
-	InitiatingParty                  *Party40Choice                                     `xml:"InitgPty,omitempty"`
+	InitiatingParty                  *Party40                                      `xml:"InitgPty,omitempty"`
 	DebtorAgent                      *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
 	DebtorAgentAccount               *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
 	PreviousInstructingAgent1        *BranchAndFinancialInstitutionIdentification6 `xml:"PrvsInstgAgt1,omitempty"`
@@ -2910,9 +2910,9 @@ type TransactionParties8 struct {
 	IntermediaryAgent3Account        *CashAccount38                                `xml:"IntrmyAgt3Acct,omitempty"`
 	CreditorAgent                    *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 	CreditorAgentAccount             *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
-	Creditor                         Party40Choice                                      `xml:"Cdtr"`
+	Creditor                         Party40                                       `xml:"Cdtr"`
 	CreditorAccount                  *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	UltimateCreditor                 *Party40Choice                                     `xml:"UltmtCdtr,omitempty"`
+	UltimateCreditor                 *Party40                                      `xml:"UltmtCdtr,omitempty"`
 }
 
 // OriginalGroupInfo3 - Original group information for investigations
