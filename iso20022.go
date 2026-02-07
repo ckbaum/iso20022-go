@@ -2249,12 +2249,101 @@ type UnderlyingTransaction21 struct {
 	TransactionInfo            []PaymentTransaction91         `xml:"TxInfAndSts,omitempty"`
 }
 
-// UnderlyingTransaction22 - Similar to UnderlyingTransaction21 but for different message types
+// UnderlyingTransaction22 - Underlying transaction for cancellation from camt.029.001.09 XSD
 type UnderlyingTransaction22 struct {
-	// Simplified structure for now - can be expanded with specific transaction details
-	OriginalGroupInfo          *OriginalGroupInfo3            `xml:"OrgnlGrpInfAndSts,omitempty"`
-	OriginalPaymentInformation []OriginalPaymentInstruction32 `xml:"OrgnlPmtInfAndSts,omitempty"`
-	TransactionInfo            []PaymentTransaction91         `xml:"TxInfAndSts,omitempty"`
+	OriginalGroupInfo          *OriginalGroupHeader14         `xml:"OrgnlGrpInfAndSts,omitempty"`
+	OriginalPaymentInformation []OriginalPaymentInstruction30 `xml:"OrgnlPmtInfAndSts,omitempty"`
+	TransactionInfo            []PaymentTransaction102        `xml:"TxInfAndSts,omitempty"`
+}
+
+// OriginalGroupHeader14 - Original group header for cancellation from camt.029.001.09 XSD
+type OriginalGroupHeader14 struct {
+	OriginalGroupCancellationID   *string                          `xml:"OrgnlGrpCxlId,omitempty"`
+	ResolvedCase                  *Case5                           `xml:"RslvdCase,omitempty"`
+	OriginalMessageID             string                           `xml:"OrgnlMsgId"`
+	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
+	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
+	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	GroupCancellationStatus       *string                          `xml:"GrpCxlSts,omitempty"` // GroupCancellationStatus1Code
+	CancellationStatusReasonInfo  []CancellationStatusReason4      `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+}
+
+// CancellationStatusReason4 - Reason for cancellation status from camt.029.001.09 XSD
+type CancellationStatusReason4 struct {
+	Originator            *PartyIdentification135          `xml:"Orgtr,omitempty"`
+	Reason                *CancellationStatusReason3Choice `xml:"Rsn,omitempty"`
+	AdditionalInformation []string                         `xml:"AddtlInf,omitempty"` // Max105Text
+}
+
+// CancellationStatusReason3Choice - Choice for cancellation status reason from camt.029.001.09 XSD
+type CancellationStatusReason3Choice struct {
+	Code        *string `xml:"Cd,omitempty"`    // ExternalPaymentCancellationRejection1Code
+	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+}
+
+// NumberOfTransactionsPerStatus1 - Number of transactions per status from camt.029.001.09 XSD
+type NumberOfTransactionsPerStatus1 struct {
+	DetailedNumberOfTransactions string   `xml:"DtldNbOfTxs"` // Max15NumericText
+	DetailedStatus               string   `xml:"DtldSts"`     // ExternalPaymentTransactionStatus1Code
+	DetailedControlSum           *float64 `xml:"DtldCtrlSum,omitempty"`
+}
+
+// OriginalPaymentInstruction30 - Original payment instruction for cancellation from camt.029.001.09 XSD
+type OriginalPaymentInstruction30 struct {
+	OriginalPaymentInfoCancellationID *string                           `xml:"OrgnlPmtInfCxlId,omitempty"`
+	ResolvedCase                      *Case5                            `xml:"RslvdCase,omitempty"`
+	OriginalPaymentInfoID             string                            `xml:"OrgnlPmtInfId"`
+	OriginalGroupInfo                 *OriginalGroupInformation29       `xml:"OrgnlGrpInf,omitempty"`
+	OriginalNumberOfTransactions      *string                           `xml:"OrgnlNbOfTxs,omitempty"`
+	OriginalControlSum                *float64                          `xml:"OrgnlCtrlSum,omitempty"`
+	PaymentInfoCancellationStatus     *string                           `xml:"PmtInfCxlSts,omitempty"` // GroupCancellationStatus1Code
+	CancellationStatusReasonInfo      []CancellationStatusReason4       `xml:"CxlStsRsnInf,omitempty"`
+	NumberOfTransactionsPerStatus     []NumberOfCancellationsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
+	TransactionInfo                   []PaymentTransaction103           `xml:"TxInfAndSts,omitempty"`
+}
+
+// NumberOfCancellationsPerStatus1 - Number of cancellations per status from camt.029.001.09 XSD
+type NumberOfCancellationsPerStatus1 struct {
+	DetailedNumberOfTransactions string   `xml:"DtldNbOfTxs"` // Max15NumericText
+	DetailedStatus               string   `xml:"DtldSts"`     // ExternalPaymentTransactionStatus1Code
+	DetailedControlSum           *float64 `xml:"DtldCtrlSum,omitempty"`
+}
+
+// PaymentTransaction102 - Payment transaction for cancellation from camt.029.001.09 XSD
+type PaymentTransaction102 struct {
+	CancellationStatusID              *string                            `xml:"CxlStsId,omitempty"`
+	ResolvedCase                      *Case5                             `xml:"RslvdCase,omitempty"`
+	OriginalGroupInfo                 *OriginalGroupInformation29        `xml:"OrgnlGrpInf,omitempty"`
+	OriginalInstructionID             *string                            `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID                *string                            `xml:"OrgnlEndToEndId,omitempty"`
+	OriginalTransactionID             *string                            `xml:"OrgnlTxId,omitempty"`
+	OriginalClearingSystemRef         *string                            `xml:"OrgnlClrSysRef,omitempty"`
+	OriginalUETR                      *string                            `xml:"OrgnlUETR,omitempty"`
+	TransactionCancellationStatus     *string                            `xml:"TxCxlSts,omitempty"` // CancellationIndividualStatus1Code
+	CancellationStatusReasonInfo      []CancellationStatusReason4        `xml:"CxlStsRsnInf,omitempty"`
+	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`
+	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"`
+	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"`
+	Assignee                          *Party40                           `xml:"Assgne,omitempty"`
+	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
+}
+
+// PaymentTransaction103 - Payment transaction for payment info cancellation from camt.029.001.09 XSD
+type PaymentTransaction103 struct {
+	CancellationStatusID            *string                            `xml:"CxlStsId,omitempty"`
+	ResolvedCase                    *Case5                             `xml:"RslvdCase,omitempty"`
+	OriginalInstructionID           *string                            `xml:"OrgnlInstrId,omitempty"`
+	OriginalEndToEndID              *string                            `xml:"OrgnlEndToEndId,omitempty"`
+	UETR                            *string                            `xml:"UETR,omitempty"`
+	TransactionCancellationStatus   *string                            `xml:"TxCxlSts,omitempty"` // CancellationIndividualStatus1Code
+	CancellationStatusReasonInfo    []CancellationStatusReason4        `xml:"CxlStsRsnInf,omitempty"`
+	OriginalInstructedAmount        *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlInstdAmt,omitempty"`
+	OriginalRequestedExecutionDate  *DateAndDateTime2                  `xml:"OrgnlReqdExctnDt,omitempty"`
+	OriginalRequestedCollectionDate *string                            `xml:"OrgnlReqdColltnDt,omitempty"`
+	OriginalTransactionReference    *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
 // PaymentCancellationReason5 - Reason for payment cancellation from camt.056.001.08 XSD
