@@ -2510,7 +2510,9 @@ type PaymentTransaction91 struct {
 	ResolutionRelatedInfo             *ResolutionData1                   `xml:"RsltnRltdInf,omitempty"`        // NEW
 	OriginalInterbankSettlementAmount *ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlIntrBkSttlmAmt,omitempty"` // NEW
 	OriginalInterbankSettlementDate   *string                            `xml:"OrgnlIntrBkSttlmDt,omitempty"`
-	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40	Assignee                          *Party40                          `xml:"Assgne,omitempty"` // NEW: Party40	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
+	Assignor                          *Party40                           `xml:"Assgnr,omitempty"` // NEW: Party40
+	Assignee                          *Party40                           `xml:"Assgne,omitempty"` // NEW: Party40
+	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
 }
 
 // StatementResolutionEntry4 - Statement resolution entry information
@@ -3018,7 +3020,7 @@ type ErrorHandling5 struct {
 	Description *string `xml:"Desc,omitempty"` // Max140Text
 }
 
-// Party44 - Similar to Party40Choicebut for different contexts (ADMI messages)
+// Party44 - Similar to Party40 but for different contexts (ADMI messages)
 type Party44 struct {
 	OrganisationIdentification *PartyIdentification135                       `xml:"OrgId,omitempty"`
 	FinancialInstitutionID     *BranchAndFinancialInstitutionIdentification6 `xml:"FIId,omitempty"`
