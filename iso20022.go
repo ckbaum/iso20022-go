@@ -106,6 +106,13 @@ type Camt02800109Document struct {
 	AdditionalPaymentInfo AdditionalPaymentInfoV09 `xml:"AddtlPmtInf"`
 }
 
+// Camt02800109DocumentFedNow represents the CAMT.028.001.09 Additional Payment Info message complying with fednow spec.
+// This message provides supplementary information related to payments that could not be included
+// in the original payment instruction, supporting enhanced payment processing and reconciliation.
+type Camt02800109DocumentFedNow struct {
+	AdditionalPaymentInfo AdditionalPaymentInfoFedNow `xml:"AddtlPmtInf"`
+}
+
 // Camt02900109Document represents the CAMT.029.001.09 Resolution of Investigation message.
 // This message communicates the final outcome and resolution of payment investigations
 // between financial institutions, providing closure to exception handling processes.
@@ -1511,6 +1518,14 @@ type AdditionalPaymentInfoV09 struct {
 	SupplementaryData []SupplementaryData1      `xml:"SplmtryData,omitempty"`
 }
 
+// AdditionalPaymentInfoFedNow - camt.028.001.09
+type AdditionalPaymentInfoFedNow struct {
+	Assignment CaseAssignment5                `xml:"Assgnmt"`
+	Case       *Case5                         `xml:"Case,omitempty"`
+	Underlying UnderlyingTransaction5         `xml:"Undrlyg"`
+	Info       PaymentComplementaryInfoFedNow `xml:"Inf"`
+}
+
 // ResolutionOfInvestigationV09 - camt.029.001.09
 // InvestigationStatus5 - Choice for investigation status from camt.029.001.09 XSD
 type InvestigationStatus5 struct {
@@ -2454,6 +2469,28 @@ type PaymentComplementaryInfo9 struct {
 	Creditor                *PartyIdentification135                       `xml:"Cdtr,omitempty"`
 	CreditorAccount         *CashAccount38                                `xml:"CdtrAcct,omitempty"`
 	CreditorAgent           *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+}
+
+// PaymentComplementaryInfo is a copy of iso.PaymentComplementaryInfo where Amount
+// uses the xml tag "InstdAmt" instead of "Amt", matching fednow requirements.
+type PaymentComplementaryInfoFedNow struct {
+	InstructionID           *string                                       `xml:"InstrId,omitempty"`
+	EndToEndID              *string                                       `xml:"EndToEndId,omitempty"`
+	TransactionID           *string                                       `xml:"TxId,omitempty"`
+	UETR                    *string                                       `xml:"UETR,omitempty"`
+	Amount                  *Amount                                       `xml:"Amt,omitempty"`
+	RequestedExecutionDate  *string                                       `xml:"ReqdExctnDt,omitempty"`
+	RequestedCollectionDate *string                                       `xml:"ReqdColltnDt,omitempty"`
+	Debtor                  *PartyIdentification135                       `xml:"Dbtr,omitempty"`
+	DebtorAccount           *CashAccount38                                `xml:"DbtrAcct,omitempty"`
+	DebtorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
+	Creditor                *PartyIdentification135                       `xml:"Cdtr,omitempty"`
+	CreditorAccount         *CashAccount38                                `xml:"CdtrAcct,omitempty"`
+	CreditorAgent           *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+}
+
+type Amount struct {
+	InstructedAmount *ActiveOrHistoricCurrencyAndAmount `xml:"InstdAmt,omitempty"`
 }
 
 // ModificationStatusReason1 - Choice for modification status reason
