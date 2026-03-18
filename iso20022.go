@@ -718,6 +718,18 @@ type Purpose2 struct {
 	Proprietary *string `xml:"Prtry,omitempty"`
 }
 
+// Purpose2Choice - Choice of purpose code or proprietary value
+type Purpose2Choice struct {
+	Code        *string `xml:"Cd,omitempty"`    // ExternalPurpose1Code
+	Proprietary *string `xml:"Prtry,omitempty"` // Max35Text
+}
+
+// Party40Choice - Choice of party identification or agent identification
+type Party40Choice struct {
+	Party *PartyIdentification135                       `xml:"Pty,omitempty"`
+	Agent *BranchAndFinancialInstitutionIdentification6 `xml:"Agt,omitempty"`
+}
+
 type RemittanceInfo2 struct {
 	Unstructured []string `xml:"Ustrd,omitempty"`
 }
@@ -1447,11 +1459,15 @@ type UnderlyingGroupInformation1 struct {
 
 // UnderlyingPaymentInstruction5 - Payment instruction for camt.026.001.07
 type UnderlyingPaymentInstruction5 struct {
-	OriginalGroupInfo     *UnderlyingGroupInformation1 `xml:"OrgnlGrpInf,omitempty"`
-	OriginalPaymentInfoID *string                      `xml:"OrgnlPmtInfId,omitempty"`   // Max35Text
-	OriginalInstructionID *string                      `xml:"OrgnlInstrId,omitempty"`    // Max35Text
-	OriginalEndToEndID    *string                      `xml:"OrgnlEndToEndId,omitempty"` // Max35Text
-	OriginalUETR          *string                      `xml:"OrgnlUETR,omitempty"`       // UUIDv4Identifier
+	OriginalGroupInfo         *UnderlyingGroupInformation1    `xml:"OrgnlGrpInf,omitempty"`
+	OriginalPaymentInfoID     *string                         `xml:"OrgnlPmtInfId,omitempty"`   // Max35Text
+	OriginalInstructionID     *string                         `xml:"OrgnlInstrId,omitempty"`    // Max35Text
+	OriginalEndToEndID        *string                         `xml:"OrgnlEndToEndId,omitempty"` // Max35Text
+	OriginalUETR              *string                         `xml:"OrgnlUETR,omitempty"`       // UUIDv4Identifier
+	OriginalInstructedAmount  ActiveOrHistoricCurrencyAndAmount `xml:"OrgnlInstdAmt"`            // Required
+	RequestedExecutionDate    *DateAndDateTime2               `xml:"ReqdExctnDt,omitempty"`
+	RequestedCollectionDate   *string                         `xml:"ReqdColltnDt,omitempty"`    // ISODate
+	OriginalTransactionRef    *OriginalTransactionReference28 `xml:"OrgnlTxRef,omitempty"`
 }
 
 // UnderlyingPaymentTransaction4 - Payment transaction for camt.026.001.07
@@ -1468,8 +1484,10 @@ type UnderlyingPaymentTransaction4 struct {
 
 // UnderlyingStatementEntry3 - Statement entry for camt.026.001.07
 type UnderlyingStatementEntry3 struct {
-	OriginalGroupInfo *UnderlyingGroupInformation1 `xml:"OrgnlGrpInf,omitempty"`
-	// Note: XSD shows this as empty complexType, so minimal structure for now
+	OriginalGroupInfo   *OriginalGroupInformation29 `xml:"OrgnlGrpInf,omitempty"`
+	OriginalStatementID *string                     `xml:"OrgnlStmtId,omitempty"` // Max35Text
+	OriginalEntryID     *string                     `xml:"OrgnlNtryId,omitempty"` // Max35Text
+	OriginalUETR        *string                     `xml:"OrgnlUETR,omitempty"`   // UUIDv4Identifier
 }
 
 // UnderlyingTransaction5 - Choice of underlying transaction types for camt.026.001.07
@@ -1506,7 +1524,7 @@ type UnableToApplyV07 struct {
 type AdditionalPaymentInfoV09 struct {
 	Assignment        CaseAssignment5           `xml:"Assgnmt"`
 	Case              *Case5                    `xml:"Case,omitempty"`
-	Underlying        UnderlyingTransaction21   `xml:"Undrlyg"`
+	Underlying        UnderlyingTransaction5    `xml:"Undrlyg"`
 	Info              PaymentComplementaryInfo9 `xml:"Inf"`
 	SupplementaryData []SupplementaryData1      `xml:"SplmtryData,omitempty"`
 }
@@ -2439,21 +2457,46 @@ type ReportingRequest5 struct {
 	ReportingSequence                 *SequenceRange1                               `xml:"RptgSeq,omitempty"`
 }
 
-// PaymentComplementaryInfo9 - Additional payment information
+// PaymentComplementaryInfo9 - Additional payment information (camt.028.001.09 PaymentComplementaryInformation8)
 type PaymentComplementaryInfo9 struct {
-	InstructionID           *string                                       `xml:"InstrId,omitempty"`
-	EndToEndID              *string                                       `xml:"EndToEndId,omitempty"`
-	TransactionID           *string                                       `xml:"TxId,omitempty"`
-	UETR                    *string                                       `xml:"UETR,omitempty"`
-	Amount                  *ActiveOrHistoricCurrencyAndAmount            `xml:"Amt,omitempty"`
-	RequestedExecutionDate  *string                                       `xml:"ReqdExctnDt,omitempty"`
-	RequestedCollectionDate *string                                       `xml:"ReqdColltnDt,omitempty"`
-	Debtor                  *PartyIdentification135                       `xml:"Dbtr,omitempty"`
-	DebtorAccount           *CashAccount38                                `xml:"DbtrAcct,omitempty"`
-	DebtorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
-	Creditor                *PartyIdentification135                       `xml:"Cdtr,omitempty"`
-	CreditorAccount         *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	CreditorAgent           *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+	InstructionID               *string                                       `xml:"InstrId,omitempty"`
+	EndToEndID                  *string                                       `xml:"EndToEndId,omitempty"`
+	TransactionID               *string                                       `xml:"TxId,omitempty"`
+	PaymentTypeInfo             *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
+	RequestedExecutionDate      *DateAndDateTime2                             `xml:"ReqdExctnDt,omitempty"`
+	RequestedCollectionDate     *string                                       `xml:"ReqdColltnDt,omitempty"` // ISODate
+	InterbankSettlementDate     *string                                       `xml:"IntrBkSttlmDt,omitempty"` // ISODate
+	Amount                      *AmountType4                                  `xml:"Amt,omitempty"`
+	InterbankSettlementAmount   *ActiveOrHistoricCurrencyAndAmount            `xml:"IntrBkSttlmAmt,omitempty"`
+	ChargeBearer                *string                                       `xml:"ChrgBr,omitempty"` // ChargeBearerType1Code
+	UltimateDebtor              *PartyIdentification135                       `xml:"UltmtDbtr,omitempty"`
+	Debtor                      *PartyIdentification135                       `xml:"Dbtr,omitempty"`
+	DebtorAccount               *CashAccount38                                `xml:"DbtrAcct,omitempty"`
+	DebtorAgent                 *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
+	DebtorAgentAccount          *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
+	SettlementInfo              *SettlementInstruction7                       `xml:"SttlmInf,omitempty"`
+	IntermediaryAgent1          *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt1,omitempty"`
+	IntermediaryAgent1Account   *CashAccount38                                `xml:"IntrmyAgt1Acct,omitempty"`
+	IntermediaryAgent2          *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt2,omitempty"`
+	IntermediaryAgent2Account   *CashAccount38                                `xml:"IntrmyAgt2Acct,omitempty"`
+	IntermediaryAgent3          *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt3,omitempty"`
+	IntermediaryAgent3Account   *CashAccount38                                `xml:"IntrmyAgt3Acct,omitempty"`
+	CreditorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
+	CreditorAgentAccount        *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
+	Creditor                    *PartyIdentification135                       `xml:"Cdtr,omitempty"`
+	CreditorAccount             *CashAccount38                                `xml:"CdtrAcct,omitempty"`
+	UltimateCreditor            *PartyIdentification135                       `xml:"UltmtCdtr,omitempty"`
+	Purpose                     *Purpose2Choice                               `xml:"Purp,omitempty"`
+	InstructionForDebtorAgent   *string                                       `xml:"InstrForDbtrAgt,omitempty"` // Max140Text
+	PreviousInstructingAgent1   *BranchAndFinancialInstitutionIdentification6 `xml:"PrvsInstgAgt1,omitempty"`
+	PreviousInstructingAgent1Acct *CashAccount38                              `xml:"PrvsInstgAgt1Acct,omitempty"`
+	PreviousInstructingAgent2   *BranchAndFinancialInstitutionIdentification6 `xml:"PrvsInstgAgt2,omitempty"`
+	PreviousInstructingAgent2Acct *CashAccount38                              `xml:"PrvsInstgAgt2Acct,omitempty"`
+	PreviousInstructingAgent3   *BranchAndFinancialInstitutionIdentification6 `xml:"PrvsInstgAgt3,omitempty"`
+	PreviousInstructingAgent3Acct *CashAccount38                              `xml:"PrvsInstgAgt3Acct,omitempty"`
+	InstructionForNextAgent     []InstructionForNextAgent1                    `xml:"InstrForNxtAgt,omitempty"`
+	InstructionForCreditorAgent []InstructionForCreditorAgent1                `xml:"InstrForCdtrAgt,omitempty"`
+	RemittanceInfo              *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
 }
 
 // ModificationStatusReason1 - Choice for modification status reason
@@ -2642,24 +2685,24 @@ type OriginalTransactionReference28 struct {
 	Amount                    *AmountType4                                  `xml:"Amt,omitempty"`
 	InterbankSettlementDate   *string                                       `xml:"IntrBkSttlmDt,omitempty"`
 	RequestedCollectionDate   *string                                       `xml:"ReqdColltnDt,omitempty"`
-	RequestedExecutionDate    *string                                       `xml:"ReqdExctnDt,omitempty"`
+	RequestedExecutionDate    *DateAndDateTime2                             `xml:"ReqdExctnDt,omitempty"`
 	CreditorSchemeID          *PartyIdentification135                       `xml:"CdtrSchmeId,omitempty"`
 	SettlementInfo            *SettlementInstruction7                       `xml:"SttlmInf,omitempty"`
 	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
 	PaymentMethod             *string                                       `xml:"PmtMtd,omitempty"`
 	MandateRelatedInfo        *MandateRelatedInfo14                         `xml:"MndtRltdInf,omitempty"`
 	RemittanceInfo            *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
-	UltimateDebtor            *PartyIdentification135                       `xml:"UltmtDbtr,omitempty"`
-	Debtor                    *PartyIdentification135                       `xml:"Dbtr,omitempty"`
+	UltimateDebtor            *Party40Choice                                `xml:"UltmtDbtr,omitempty"`
+	Debtor                    *Party40Choice                                `xml:"Dbtr,omitempty"`
 	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
 	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
 	DebtorAgentAccount        *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
 	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 	CreditorAgentAccount      *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
-	Creditor                  *PartyIdentification135                       `xml:"Cdtr,omitempty"`
+	Creditor                  *Party40Choice                                `xml:"Cdtr,omitempty"`
 	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	UltimateCreditor          *PartyIdentification135                       `xml:"UltmtCdtr,omitempty"`
-	SupplementaryData         []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
+	UltimateCreditor          *Party40Choice                                `xml:"UltmtCdtr,omitempty"`
+	Purpose                   *Purpose2Choice                               `xml:"Purp,omitempty"`
 }
 
 // OriginalTransactionReference31 - Similar to OriginalTransactionReference28 but for different message types
