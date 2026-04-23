@@ -508,7 +508,8 @@ func TestMoreValidationFunctions(t *testing.T) {
 	t.Log("All new validation functions are working correctly!")
 }
 
-// Helper function to create float pointers
-func floatPtr(f float64) *float64 {
-	return &f
+// Helper function to create Decimal pointers
+func floatPtr(f float64) *Decimal {
+	d := Decimal(f)
+	return &d
 }

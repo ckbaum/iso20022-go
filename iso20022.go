@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -191,7 +192,7 @@ type GroupHeader93 struct {
 	CreationDateTime               *time.Time                                    `xml:"CreDtTm,omitempty"`
 	BatchBooking                   *bool                                         `xml:"BtchBookg,omitempty"`
 	NumberOfTransactions           string                                        `xml:"NbOfTxs"`
-	ControlSum                     *float64                                      `xml:"CtrlSum,omitempty"`
+	ControlSum                     *Decimal                                      `xml:"CtrlSum,omitempty"`
 	TotalInterbankSettlementAmount *ActiveCurrencyAndAmount                      `xml:"TtlIntrBkSttlmAmt,omitempty"`
 	InterbankSettlementDate        *string                                       `xml:"IntrBkSttlmDt,omitempty"`
 	SettlementInfo                 SettlementInstruction7                        `xml:"SttlmInf"`
@@ -214,7 +215,7 @@ type CreditTransferTransaction39 struct {
 	AcceptanceDateTime               *time.Time                                    `xml:"AccptncDtTm,omitempty"`
 	PoolingAdjustmentDate            *string                                       `xml:"PoolgAdjstmntDt,omitempty"`
 	InstructedAmount                 *ActiveOrHistoricCurrencyAndAmount            `xml:"InstdAmt,omitempty"`
-	ExchangeRate                     *float64                                      `xml:"XchgRate,omitempty"`
+	ExchangeRate                     *Decimal                                      `xml:"XchgRate,omitempty"`
 	ChargeBearer                     string                                        `xml:"ChrgBr"`
 	ChargesInfo                      []Charges7                                    `xml:"ChrgsInf,omitempty"`
 	PreviousInstructingAgent1        *BranchAndFinancialInstitutionIdentification6 `xml:"PrvsInstgAgt1,omitempty"`
@@ -284,20 +285,104 @@ type PaymentTypeInfo struct {
 	CategoryPurpose     *CategoryPurpose `xml:"CtgyPurp,omitempty"`
 }
 
+// Decimal is a float64 that serializes to XML in decimal notation, never scientific notation.
+// This prevents large values like 12300000000 from being encoded as 1.23e+10.
+type Decimal float64
+
+// MarshalXML encodes the decimal value without scientific notation.
+func (d Decimal) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	e.EncodeToken(xml.CharData(strconv.FormatFloat(float64(d), 'f', -1, 64)))
+	e.EncodeToken(start.End())
+	return nil
+}
+
+// UnmarshalXML decodes a decimal value from XML character data.
+func (d *Decimal) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var s string
+	if err := dec.DecodeElement(&s, &start); err != nil {
+		return err
+	}
+	v, err := strconv.ParseFloat(strings.TrimSpace(s), 64)
+	if err != nil {
+		return err
+	}
+	*d = Decimal(v)
+	return nil
+}
+
 // ActiveCurrencyAndAmount represents a monetary amount with an active currency code.
 // Used throughout ISO 20022 messages to specify settlement amounts, fees, and other monetary values
 // with their corresponding three-character ISO currency codes.
 type ActiveCurrencyAndAmount struct {
-	Value    float64 `xml:",chardata"`
+	Value    Decimal `xml:",chardata"`
 	Currency string  `xml:"Ccy,attr"`
+}
+
+// MarshalXML encodes the amount in decimal notation. The chardata tag bypasses the
+// Decimal type's MarshalXML, so we handle it at the struct level.
+func (a ActiveCurrencyAndAmount) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "Ccy"}, Value: a.Currency})
+	e.EncodeToken(start)
+	e.EncodeToken(xml.CharData(strconv.FormatFloat(float64(a.Value), 'f', -1, 64)))
+	e.EncodeToken(start.End())
+	return nil
+}
+
+// UnmarshalXML decodes the amount value and currency attribute from XML.
+func (a *ActiveCurrencyAndAmount) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "Ccy" {
+			a.Currency = attr.Value
+		}
+	}
+	var raw string
+	if err := d.DecodeElement(&raw, &start); err != nil {
+		return err
+	}
+	v, err := strconv.ParseFloat(strings.TrimSpace(raw), 64)
+	if err != nil {
+		return err
+	}
+	a.Value = Decimal(v)
+	return nil
 }
 
 // ActiveOrHistoricCurrencyAndAmount represents a monetary amount with active or historic currency.
 // Similar to ActiveCurrencyAndAmount but allows for historic currencies that are no longer in active use,
 // supporting legacy transactions and reporting requirements.
 type ActiveOrHistoricCurrencyAndAmount struct {
-	Value    float64 `xml:",chardata"`
+	Value    Decimal `xml:",chardata"`
 	Currency string  `xml:"Ccy,attr"`
+}
+
+// MarshalXML encodes the amount in decimal notation. The chardata tag bypasses the
+// Decimal type's MarshalXML, so we handle it at the struct level.
+func (a ActiveOrHistoricCurrencyAndAmount) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "Ccy"}, Value: a.Currency})
+	e.EncodeToken(start)
+	e.EncodeToken(xml.CharData(strconv.FormatFloat(float64(a.Value), 'f', -1, 64)))
+	e.EncodeToken(start.End())
+	return nil
+}
+
+// UnmarshalXML decodes the amount value and currency attribute from XML.
+func (a *ActiveOrHistoricCurrencyAndAmount) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "Ccy" {
+			a.Currency = attr.Value
+		}
+	}
+	var raw string
+	if err := d.DecodeElement(&raw, &start); err != nil {
+		return err
+	}
+	v, err := strconv.ParseFloat(strings.TrimSpace(raw), 64)
+	if err != nil {
+		return err
+	}
+	a.Value = Decimal(v)
+	return nil
 }
 
 // Authorization1 represents authorization information using either a standard code or proprietary format.
@@ -634,7 +719,7 @@ type TaxInfo struct {
 	TotalTaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxblBaseAmt,omitempty"`
 	TotalTaxAmount         *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxAmt,omitempty"`
 	Date                   *string                            `xml:"Dt,omitempty"`
-	SequenceNumber         *float64                           `xml:"SeqNb,omitempty"`
+	SequenceNumber         *Decimal                           `xml:"SeqNb,omitempty"`
 	Record                 []TaxRecord                        `xml:"Rcrd,omitempty"`
 }
 
@@ -779,7 +864,7 @@ type TaxInfo8 struct {
 	TotalTaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxblBaseAmt,omitempty"`
 	TotalTaxAmount         *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxAmt,omitempty"`
 	Date                   *string                            `xml:"Dt,omitempty"`
-	SequenceNumber         *float64                           `xml:"SeqNb,omitempty"`
+	SequenceNumber         *Decimal                           `xml:"SeqNb,omitempty"`
 	Record                 []TaxRecord2                       `xml:"Rcrd,omitempty"`
 }
 
@@ -825,7 +910,7 @@ type TaxPeriod2 struct {
 }
 
 type TaxAmount2 struct {
-	Rate              *float64                           `xml:"Rate,omitempty"`
+	Rate              *Decimal                           `xml:"Rate,omitempty"`
 	TaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TaxblBaseAmt,omitempty"`
 	TotalAmount       *ActiveOrHistoricCurrencyAndAmount `xml:"TtlAmt,omitempty"`
 	Details           []TaxRecordDetails2                `xml:"Dtls,omitempty"`
@@ -934,7 +1019,7 @@ type TaxInfo7 struct {
 	TotalTaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxblBaseAmt,omitempty"`
 	TotalTaxAmount         *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxAmt,omitempty"`
 	Date                   *string                            `xml:"Dt,omitempty"`
-	SequenceNumber         *float64                           `xml:"SeqNb,omitempty"`
+	SequenceNumber         *Decimal                           `xml:"SeqNb,omitempty"`
 	Record                 []TaxRecord2                       `xml:"Rcrd,omitempty"`
 }
 
@@ -1148,7 +1233,7 @@ type DatePeriod struct {
 }
 
 type TaxAmount struct {
-	Rate              *float64                           `xml:"Rate,omitempty"`
+	Rate              *Decimal                           `xml:"Rate,omitempty"`
 	TaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TaxblBaseAmt,omitempty"`
 	TotalAmount       *ActiveOrHistoricCurrencyAndAmount `xml:"TtlAmt,omitempty"`
 	Details           []TaxRecordDetails                 `xml:"Dtls,omitempty"`
@@ -1289,7 +1374,7 @@ type TaxInfoSecondary struct {
 	TotalTaxableBaseAmount *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxblBaseAmt,omitempty"`
 	TotalTaxAmount         *ActiveOrHistoricCurrencyAndAmount `xml:"TtlTaxAmt,omitempty"`
 	Date                   *string                            `xml:"Dt,omitempty"`
-	SequenceNumber         *float64                           `xml:"SeqNb,omitempty"`
+	SequenceNumber         *Decimal                           `xml:"SeqNb,omitempty"`
 	Record                 []TaxRecord                        `xml:"Rcrd,omitempty"`
 }
 
@@ -1765,7 +1850,7 @@ type GroupHeader90 struct {
 	Authorization                          []Authorization1                              `xml:"Authstn,omitempty"`
 	BatchBooking                           *bool                                         `xml:"BtchBookg,omitempty"`
 	NumberOfTransactions                   string                                        `xml:"NbOfTxs"`
-	ControlSum                             *float64                                      `xml:"CtrlSum,omitempty"`
+	ControlSum                             *Decimal                                      `xml:"CtrlSum,omitempty"`
 	GroupReturn                            *bool                                         `xml:"GrpRtr,omitempty"`
 	TotalReturnedInterbankSettlementAmount *ActiveCurrencyAndAmount                      `xml:"TtlRtrdIntrBkSttlmAmt,omitempty"`
 	InterbankSettlementDate                *string                                       `xml:"IntrBkSttlmDt,omitempty"`
@@ -1795,7 +1880,7 @@ type GroupHeader78 struct {
 	CreationDateTime     *time.Time                                   `xml:"CreDtTm,omitempty"`
 	Authorization        []Authorization1                             `xml:"Authstn,omitempty"`
 	NumberOfTransactions string                                       `xml:"NbOfTxs"`
-	ControlSum           *float64                                     `xml:"CtrlSum,omitempty"`
+	ControlSum           *Decimal                                     `xml:"CtrlSum,omitempty"`
 	InitiatingParty      PartyIdentification                          `xml:"InitgPty"`
 	ForwardingAgent      *BranchAndFinancialInstitutionIdentification `xml:"FwdgAgt,omitempty"`
 }
@@ -1822,7 +1907,7 @@ type OriginalGroupInformation30 struct {
 	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum            *Decimal                         `xml:"OrgnlCtrlSum,omitempty"`
 	GroupStatus                   *string                          `xml:"GrpSts,omitempty"`
 	StatusReasonInfo              []StatusReasonInfo12             `xml:"StsRsnInf,omitempty"`
 	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus5 `xml:"NbOfTxsPerSts,omitempty"`
@@ -1832,7 +1917,7 @@ type OriginalGroupInformation30 struct {
 type OriginalPaymentInstruction31 struct {
 	OriginalPaymentInfoID         string                           `xml:"OrgnlPmtInfId"`
 	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum            *Decimal                         `xml:"OrgnlCtrlSum,omitempty"`
 	PaymentInfoStatus             *string                          `xml:"PmtInfSts,omitempty"`
 	StatusReasonInfo              []StatusReasonInfo12             `xml:"StsRsnInf,omitempty"`
 	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus5 `xml:"NbOfTxsPerSts,omitempty"`
@@ -1973,7 +2058,7 @@ type PaymentTransactionInfo51 struct {
 	ReturnedInterbankSettlementAmount ActiveCurrencyAndAmount            `xml:"RtrdIntrBkSttlmAmt"`
 	InterbankSettlementDate           *string                            `xml:"IntrBkSttlmDt,omitempty"`
 	ReturnedInstructedAmount          *ActiveOrHistoricCurrencyAndAmount `xml:"RtrdInstdAmt,omitempty"`
-	ExchangeRate                      *float64                           `xml:"XchgRate,omitempty"`
+	ExchangeRate                      *Decimal                           `xml:"XchgRate,omitempty"`
 	CompensationAmount                *ActiveOrHistoricCurrencyAndAmount `xml:"CompstnAmt,omitempty"`
 	ReturnReason                      ReturnReason5                      `xml:"RtrRsn"`
 	OriginalTransactionReference      *OriginalTransactionReference28    `xml:"OrgnlTxRef,omitempty"`
@@ -1997,7 +2082,7 @@ type OriginalGroupHeader17 struct {
 	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum            *Decimal                         `xml:"OrgnlCtrlSum,omitempty"`
 	GroupStatus                   *string                          `xml:"GrpSts,omitempty"`
 	StatusReasonInfo              []StatusReasonInfo12             `xml:"StsRsnInf,omitempty"`
 	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus5 `xml:"NbOfTxsPerSts,omitempty"`
@@ -2008,7 +2093,7 @@ type OriginalGroupInfo29 struct {
 	OriginalMessageNameID        string                `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime     *time.Time            `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions *string               `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum           *float64              `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum           *Decimal              `xml:"OrgnlCtrlSum,omitempty"`
 	ReturnReason                 *PaymentReturnReason5 `xml:"RtrRsn,omitempty"`
 }
 
@@ -2018,7 +2103,7 @@ type OriginalGroupInformation27 struct {
 	OriginalMessageNameID        string     `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime     *time.Time `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions *string    `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum           *float64   `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum           *Decimal   `xml:"OrgnlCtrlSum,omitempty"`
 }
 
 // OriginalGroupInformation29 - for pacs.028.001.03 PaymentTransaction113 (exact XSD match)
@@ -2096,7 +2181,7 @@ type PaymentTransaction118 struct {
 	SettlementPriority                *string                                       `xml:"SttlmPrty,omitempty"`
 	SettlementTimeIndication          *SettlementDateTimeIndication1                `xml:"SttlmTmIndctn,omitempty"`
 	ReturnedInstructedAmount          *ActiveOrHistoricCurrencyAndAmount            `xml:"RtrdInstdAmt,omitempty"`
-	ExchangeRate                      *float64                                      `xml:"XchgRate,omitempty"`
+	ExchangeRate                      *Decimal                                      `xml:"XchgRate,omitempty"`
 	CompensationAmount                *ActiveOrHistoricCurrencyAndAmount            `xml:"CompstnAmt,omitempty"`
 	ChargeBearer                      *string                                       `xml:"ChrgBr,omitempty"`
 	ChargesInfo                       []Charges7                                    `xml:"ChrgsInf,omitempty"`
@@ -2188,7 +2273,7 @@ type StatusReasonInfo12 struct {
 type NumberOfTransactionsPerStatus5 struct {
 	DetailedNumberOfTransactions string   `xml:"DtldNbOfTxs"`
 	DetailedStatus               string   `xml:"DtldSts"`
-	DetailedControlSum           *float64 `xml:"DtldCtrlSum,omitempty"`
+	DetailedControlSum           *Decimal `xml:"DtldCtrlSum,omitempty"`
 }
 
 type Pagination1 struct {
@@ -2200,9 +2285,9 @@ type Pagination1 struct {
 type AccountReport25 struct {
 	ID                       string              `xml:"Id"`                     // Max35Text - required
 	ReportPagination         *Pagination1        `xml:"RptPgntn,omitempty"`     // Optional
-	ElectronicSequenceNumber *float64            `xml:"ElctrncSeqNb,omitempty"` // Number - optional
+	ElectronicSequenceNumber *Decimal            `xml:"ElctrncSeqNb,omitempty"` // Number - optional
 	ReportingSequence        *SequenceRange1     `xml:"RptgSeq,omitempty"`      // Optional
-	LegalSequenceNumber      *float64            `xml:"LglSeqNb,omitempty"`     // Number - optional
+	LegalSequenceNumber      *Decimal            `xml:"LglSeqNb,omitempty"`     // Number - optional
 	CreationDateTime         *time.Time          `xml:"CreDtTm,omitempty"`      // ISODateTime - optional
 	FromToDate               *DateTimePeriod1    `xml:"FrToDt,omitempty"`       // Optional
 	CopyDuplicateIndicator   *string             `xml:"CpyDplctInd,omitempty"`  // CopyDuplicate1Code - optional
@@ -2223,9 +2308,9 @@ type AccountNotification19 = AccountNotification17
 type AccountNotification17 struct {
 	ID                         string              `xml:"Id"`                       // Max35Text - required
 	NotificationPagination     *Pagination1        `xml:"NtfctnPgntn,omitempty"`    // Optional
-	ElectronicSequenceNumber   *float64            `xml:"ElctrncSeqNb,omitempty"`   // Number - optional
+	ElectronicSequenceNumber   *Decimal            `xml:"ElctrncSeqNb,omitempty"`   // Number - optional
 	ReportingSequence          *SequenceRange1     `xml:"RptgSeq,omitempty"`        // Optional
-	LegalSequenceNumber        *float64            `xml:"LglSeqNb,omitempty"`       // Number - optional
+	LegalSequenceNumber        *Decimal            `xml:"LglSeqNb,omitempty"`       // Number - optional
 	CreationDateTime           *time.Time          `xml:"CreDtTm,omitempty"`        // ISODateTime - optional
 	FromToDate                 *DateTimePeriod1    `xml:"FrToDt,omitempty"`         // Optional
 	CopyDuplicateIndicator     *string             `xml:"CpyDplctInd,omitempty"`    // CopyDuplicate1Code - optional
@@ -2256,7 +2341,7 @@ type Case5 struct {
 // ControlData1 - Control data for investigations and cancellations
 type ControlData1 struct {
 	NumberOfTransactions string   `xml:"NbOfTxs"`           // Max15NumericText - required
-	ControlSum           *float64 `xml:"CtrlSum,omitempty"` // DecimalNumber - optional
+	ControlSum           *Decimal `xml:"CtrlSum,omitempty"` // DecimalNumber - optional
 }
 
 // UnderlyingTransaction21 - Underlying transaction information
@@ -2282,7 +2367,7 @@ type OriginalGroupHeader14 struct {
 	OriginalMessageNameID         string                           `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime      *time.Time                       `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions  *string                          `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum            *float64                         `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum            *Decimal                         `xml:"OrgnlCtrlSum,omitempty"`
 	GroupCancellationStatus       *string                          `xml:"GrpCxlSts,omitempty"` // GroupCancellationStatus1Code
 	CancellationStatusReasonInfo  []CancellationStatusReason4      `xml:"CxlStsRsnInf,omitempty"`
 	NumberOfTransactionsPerStatus []NumberOfTransactionsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
@@ -2305,7 +2390,7 @@ type CancellationStatusReason3Choice struct {
 type NumberOfTransactionsPerStatus1 struct {
 	DetailedNumberOfTransactions string   `xml:"DtldNbOfTxs"` // Max15NumericText
 	DetailedStatus               string   `xml:"DtldSts"`     // ExternalPaymentTransactionStatus1Code
-	DetailedControlSum           *float64 `xml:"DtldCtrlSum,omitempty"`
+	DetailedControlSum           *Decimal `xml:"DtldCtrlSum,omitempty"`
 }
 
 // OriginalPaymentInstruction30 - Original payment instruction for cancellation from camt.029.001.09 XSD
@@ -2315,7 +2400,7 @@ type OriginalPaymentInstruction30 struct {
 	OriginalPaymentInfoID             string                            `xml:"OrgnlPmtInfId"`
 	OriginalGroupInfo                 *OriginalGroupInformation29       `xml:"OrgnlGrpInf,omitempty"`
 	OriginalNumberOfTransactions      *string                           `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum                *float64                          `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum                *Decimal                          `xml:"OrgnlCtrlSum,omitempty"`
 	PaymentInfoCancellationStatus     *string                           `xml:"PmtInfCxlSts,omitempty"` // GroupCancellationStatus1Code
 	CancellationStatusReasonInfo      []CancellationStatusReason4       `xml:"CxlStsRsnInf,omitempty"`
 	NumberOfTransactionsPerStatus     []NumberOfCancellationsPerStatus1 `xml:"NbOfTxsPerCxlSts,omitempty"`
@@ -2326,7 +2411,7 @@ type OriginalPaymentInstruction30 struct {
 type NumberOfCancellationsPerStatus1 struct {
 	DetailedNumberOfTransactions string   `xml:"DtldNbOfTxs"` // Max15NumericText
 	DetailedStatus               string   `xml:"DtldSts"`     // ExternalPaymentTransactionStatus1Code
-	DetailedControlSum           *float64 `xml:"DtldCtrlSum,omitempty"`
+	DetailedControlSum           *Decimal `xml:"DtldCtrlSum,omitempty"`
 }
 
 // PaymentTransaction102 - Payment transaction for cancellation from camt.029.001.09 XSD
@@ -2379,7 +2464,7 @@ type OriginalGroupHeader15 struct {
 	OriginalMessageNameID    string                       `xml:"OrgnlMsgNmId"`           // Max35Text - Required
 	OriginalCreationDateTime *time.Time                   `xml:"OrgnlCreDtTm,omitempty"` // ISODateTime
 	NumberOfTransactions     *string                      `xml:"NbOfTxs,omitempty"`      // Max15NumericText
-	ControlSum               *float64                     `xml:"CtrlSum,omitempty"`      // DecimalNumber
+	ControlSum               *Decimal                     `xml:"CtrlSum,omitempty"`      // DecimalNumber
 	GroupCancellation        *bool                        `xml:"GrpCxl,omitempty"`       // GroupCancellationIndicator (boolean)
 	CancellationReasonInfo   []PaymentCancellationReason5 `xml:"CxlRsnInf,omitempty"`    // unbounded
 }
@@ -2422,7 +2507,7 @@ type OriginalPaymentInstruction36 struct {
 	OriginalPaymentInfoID             string                       `xml:"OrgnlPmtInfId"`
 	OriginalGroupInfo                 *OriginalGroupInformation29  `xml:"OrgnlGrpInf,omitempty"`
 	NumberOfTransactions              *string                      `xml:"NbOfTxs,omitempty"`
-	ControlSum                        *float64                     `xml:"CtrlSum,omitempty"`
+	ControlSum                        *Decimal                     `xml:"CtrlSum,omitempty"`
 	PaymentInfoCancellation           *bool                        `xml:"PmtInfCxl,omitempty"`
 	CancellationReasonInfo            []PaymentCancellationReason5 `xml:"CxlRsnInf,omitempty"`
 	TransactionInfo                   []PaymentTransaction109      `xml:"TxInf,omitempty"`
@@ -2587,7 +2672,7 @@ type PaymentInstruction31 struct {
 	PaymentMethod             string                                        `xml:"PmtMtd"`   // Required - PaymentMethod3Code
 	BatchBooking              *bool                                         `xml:"BtchBookg,omitempty"`
 	NumberOfTransactions      *string                                       `xml:"NbOfTxs,omitempty"` // Max15NumericText
-	ControlSum                *float64                                      `xml:"CtrlSum,omitempty"`
+	ControlSum                *Decimal                                      `xml:"CtrlSum,omitempty"`
 	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
 	RequestedExecutionDate    *string                                       `xml:"ReqdExctnDt,omitempty"`
 	Pooler                    *PartyIdentification135                       `xml:"Poolgr,omitempty"`
@@ -2806,13 +2891,13 @@ type InterestType1 struct {
 type Rate4 struct {
 	Type          *RateType4                               `xml:"Tp,omitempty"`
 	ValidityRange *ActiveOrHistoricCurrencyAndAmountRange2 `xml:"VldtyRg,omitempty"`
-	Rate          *float64                                 `xml:"Rate,omitempty"` // PercentageRate
+	Rate          *Decimal                                 `xml:"Rate,omitempty"` // PercentageRate
 }
 
 // TaxCharges2 - Tax charges information
 type TaxCharges2 struct {
 	ID     *string                            `xml:"Id,omitempty"`
-	Rate   *float64                           `xml:"Rate,omitempty"` // PercentageRate
+	Rate   *Decimal                           `xml:"Rate,omitempty"` // PercentageRate
 	Amount *ActiveOrHistoricCurrencyAndAmount `xml:"Amt,omitempty"`
 }
 
@@ -2838,14 +2923,14 @@ type CashAvailability1 struct {
 // NumberAndSumOfTransactions4 - Number and sum of transactions
 type NumberAndSumOfTransactions4 struct {
 	NumberOfEntries *string                `xml:"NbOfNtries,omitempty"` // Max15NumericText
-	Sum             *float64               `xml:"Sum,omitempty"`        // DecimalNumber
+	Sum             *Decimal               `xml:"Sum,omitempty"`        // DecimalNumber
 	TotalNetEntry   *TotalNetEntryDetails1 `xml:"TtlNetNtry,omitempty"`
 }
 
 // NumberAndSumOfTransactions1 - Simplified number and sum
 type NumberAndSumOfTransactions1 struct {
 	NumberOfEntries *string  `xml:"NbOfNtries,omitempty"` // Max15NumericText
-	Sum             *float64 `xml:"Sum,omitempty"`        // DecimalNumber
+	Sum             *Decimal `xml:"Sum,omitempty"`        // DecimalNumber
 }
 
 // EntryTransaction10 - Entry transaction details
@@ -2861,7 +2946,7 @@ type EntryTransaction10 struct {
 	Interest                          *TransactionInterest4              `xml:"Intrst,omitempty"`
 	RelatedParties                    *TransactionParties6               `xml:"RltdPties,omitempty"`
 	RelatedAgents                     *TransactionAgents5                `xml:"RltdAgts,omitempty"`
-	LegalSequenceNumber               *float64                           `xml:"LglSeqNb,omitempty"`
+	LegalSequenceNumber               *Decimal                           `xml:"LglSeqNb,omitempty"`
 	Purpose                           *Purpose2                          `xml:"Purp,omitempty"`
 	RelatedRemittanceInfo             *RemittanceLocation7               `xml:"RltdRmtInf,omitempty"`
 	RemittanceInfo                    *RemittanceInfo16                  `xml:"RmtInf,omitempty"`
@@ -2966,7 +3051,7 @@ type OriginalGroupInfo3 struct {
 	OriginalMessageNameID        string     `xml:"OrgnlMsgNmId"`
 	OriginalCreationDateTime     *time.Time `xml:"OrgnlCreDtTm,omitempty"`
 	OriginalNumberOfTransactions *string    `xml:"OrgnlNbOfTxs,omitempty"`
-	OriginalControlSum           *float64   `xml:"OrgnlCtrlSum,omitempty"`
+	OriginalControlSum           *Decimal   `xml:"OrgnlCtrlSum,omitempty"`
 	GroupCancellationID          *string    `xml:"GrpCxlId,omitempty"`
 }
 
@@ -3556,7 +3641,7 @@ func (d *Admi99800102Document) Validate() error {
 
 // RateType4 - Rate type selection
 type RateType4 struct {
-	Percentage *float64 `xml:"Pctg,omitempty"` // PercentageRate
+	Percentage *Decimal `xml:"Pctg,omitempty"` // PercentageRate
 	Other      *string  `xml:"Othr,omitempty"` // Max35Text
 }
 
@@ -3568,14 +3653,14 @@ type ActiveOrHistoricCurrencyAndAmountRange2 struct {
 
 // AmountRangeBoundary1 - Amount range boundary
 type AmountRangeBoundary1 struct {
-	BoundaryAmount float64 `xml:"BdryAmt"` // DecimalNumber
+	BoundaryAmount Decimal `xml:"BdryAmt"` // DecimalNumber
 	Included       bool    `xml:"Incl"`    // YesNoIndicator
 }
 
 // TotalNetEntryDetails1 - Total net entry details
 type TotalNetEntryDetails1 struct {
 	NumberOfEntries *string               `xml:"NbOfNtries,omitempty"` // Max15NumericText
-	Sum             *float64              `xml:"Sum,omitempty"`        // DecimalNumber
+	Sum             *Decimal              `xml:"Sum,omitempty"`        // DecimalNumber
 	TotalNetEntry   *AmountAndDirection35 `xml:"TtlNetNtry,omitempty"`
 }
 
@@ -3629,7 +3714,7 @@ type CurrencyExchange5 struct {
 	SourceCurrency string   `xml:"SrcCcy"`             // ActiveOrHistoricCurrencyCode
 	TargetCurrency *string  `xml:"TrgtCcy,omitempty"`  // ActiveOrHistoricCurrencyCode
 	UnitCurrency   *string  `xml:"UnitCcy,omitempty"`  // ActiveOrHistoricCurrencyCode
-	ExchangeRate   *float64 `xml:"XchgRate,omitempty"` // BaseOneRate
+	ExchangeRate   *Decimal `xml:"XchgRate,omitempty"` // BaseOneRate
 	ContractID     *string  `xml:"CtrctId,omitempty"`  // Max35Text
 	QuotationDate  *string  `xml:"QtnDt,omitempty"`    // ISODate
 }
@@ -3670,7 +3755,7 @@ type ChargesRecord3 struct {
 	CreditDebitIndicator     *string                                       `xml:"CdtDbtInd,omitempty"` // CreditDebitCode
 	ChargesIncludedIndicator *bool                                         `xml:"ChrgInclInd,omitempty"`
 	Type                     *ChargeType3                                  `xml:"Tp,omitempty"`
-	Rate                     *float64                                      `xml:"Rate,omitempty"` // PercentageRate
+	Rate                     *Decimal                                      `xml:"Rate,omitempty"` // PercentageRate
 	Bearer                   *ChargeBearerType1Code                        `xml:"Br,omitempty"`
 	Agent                    *BranchAndFinancialInstitutionIdentification6 `xml:"Agt,omitempty"`
 	Tax                      *TaxCharges2                                  `xml:"Tax,omitempty"`
