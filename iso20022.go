@@ -1876,13 +1876,11 @@ type GroupHeader81 struct {
 }
 
 type GroupHeader78 struct {
-	MessageID            string                                       `xml:"MsgId"`
-	CreationDateTime     *time.Time                                   `xml:"CreDtTm,omitempty"`
-	Authorization        []Authorization1                             `xml:"Authstn,omitempty"`
-	NumberOfTransactions string                                       `xml:"NbOfTxs"`
-	ControlSum           *Decimal                                     `xml:"CtrlSum,omitempty"`
-	InitiatingParty      PartyIdentification                          `xml:"InitgPty"`
-	ForwardingAgent      *BranchAndFinancialInstitutionIdentification `xml:"FwdgAgt,omitempty"`
+	MessageID            string                 `xml:"MsgId"`
+	CreationDateTime     time.Time              `xml:"CreDtTm"`
+	NumberOfTransactions string                 `xml:"NbOfTxs"`
+	ControlSum           *Decimal               `xml:"CtrlSum,omitempty"`
+	InitiatingParty      PartyIdentification135 `xml:"InitgPty"`
 }
 
 type GroupHeader86 struct {
@@ -2207,17 +2205,17 @@ type OriginalTransactionReference32 struct {
 	PaymentMethod             *string                                       `xml:"PmtMtd,omitempty"`
 	MandateRelatedInfo        *MandateRelatedInfo14                         `xml:"MndtRltdInf,omitempty"`
 	RemittanceInfo            *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
-	UltimateDebtor            *Party40                                      `xml:"UltmtDbtr,omitempty"`
-	Debtor                    *Party40                                      `xml:"Dbtr,omitempty"`
+	UltimateDebtor            *Party40Choice                                `xml:"UltmtDbtr,omitempty"`
+	Debtor                    *Party40Choice                                `xml:"Dbtr,omitempty"`
 	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
 	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
 	DebtorAgentAccount        *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
 	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 	CreditorAgentAccount      *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
-	Creditor                  *Party40                                      `xml:"Cdtr,omitempty"`
+	Creditor                  *Party40Choice                                `xml:"Cdtr,omitempty"`
 	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	UltimateCreditor          *Party40                                      `xml:"UltmtCdtr,omitempty"`
-	Purpose                   *Purpose2                                     `xml:"Purp,omitempty"`
+	UltimateCreditor          *Party40Choice                                `xml:"UltmtCdtr,omitempty"`
+	Purpose                   *Purpose2Choice                               `xml:"Purp,omitempty"`
 }
 
 // Additional base types
@@ -2666,21 +2664,20 @@ type ResolutionData2 struct {
 	CreditorReference         *CreditorReferenceInfo2            `xml:"CdtrRefInf,omitempty"`
 }
 
-// PaymentInstruction31 - Payment instruction information
+// PaymentInstruction31 - Payment instruction information for pain.013.001.07
 type PaymentInstruction31 struct {
-	PaymentInfoID             string                                        `xml:"PmtInfId"` // Required
-	PaymentMethod             string                                        `xml:"PmtMtd"`   // Required - PaymentMethod3Code
-	BatchBooking              *bool                                         `xml:"BtchBookg,omitempty"`
-	NumberOfTransactions      *string                                       `xml:"NbOfTxs,omitempty"` // Max15NumericText
-	ControlSum                *Decimal                                      `xml:"CtrlSum,omitempty"`
-	PaymentTypeInfo           *PaymentTypeInfo19                            `xml:"PmtTpInf,omitempty"`
-	RequestedExecutionDate    *string                                       `xml:"ReqdExctnDt,omitempty"`
-	Pooler                    *PartyIdentification135                       `xml:"Poolgr,omitempty"`
-	Debtor                    *PartyIdentification135                       `xml:"Dbtr,omitempty"`
-	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
-	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
-	CreditTransferTransaction []CreditTransferTransaction39                 `xml:"CdtTrfTxInf,omitempty"`
-	SupplementaryData         []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
+	PaymentInfoID             *string                                      `xml:"PmtInfId,omitempty"`
+	PaymentMethod             string                                       `xml:"PmtMtd"`
+	PaymentTypeInfo           *PaymentTypeInformation26                    `xml:"PmtTpInf,omitempty"`
+	RequestedExecutionDate    DateAndDateTime2                       `xml:"ReqdExctnDt"`
+	ExpiryDate                *DateAndDateTime2                      `xml:"XpryDt,omitempty"`
+	PaymentCondition          *PaymentCondition1                           `xml:"PmtCond,omitempty"`
+	Debtor                    PartyIdentification135                       `xml:"Dbtr"`
+	DebtorAccount             *CashAccount38                               `xml:"DbtrAcct,omitempty"`
+	DebtorAgent               BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt"`
+	UltimateDebtor            *PartyIdentification135                      `xml:"UltmtDbtr,omitempty"`
+	ChargeBearer              *ChargeBearerType1Code                       `xml:"ChrgBr,omitempty"`
+	CreditTransferTransaction []CreditTransferTransaction35                `xml:"CdtTrfTx"`
 }
 
 // OriginalPaymentInstruction32 - Original payment instruction reference
@@ -2777,17 +2774,17 @@ type OriginalTransactionReference28 struct {
 	PaymentMethod             *string                                       `xml:"PmtMtd,omitempty"`
 	MandateRelatedInfo        *MandateRelatedInfo14                         `xml:"MndtRltdInf,omitempty"`
 	RemittanceInfo            *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
-	UltimateDebtor            *Party40Choice                                `xml:"UltmtDbtr,omitempty"`
-	Debtor                    *Party40Choice                                `xml:"Dbtr,omitempty"`
+	UltimateDebtor            *Party40                                `xml:"UltmtDbtr,omitempty"`
+	Debtor                    *Party40                                `xml:"Dbtr,omitempty"`
 	DebtorAccount             *CashAccount38                                `xml:"DbtrAcct,omitempty"`
 	DebtorAgent               *BranchAndFinancialInstitutionIdentification6 `xml:"DbtrAgt,omitempty"`
 	DebtorAgentAccount        *CashAccount38                                `xml:"DbtrAgtAcct,omitempty"`
 	CreditorAgent             *BranchAndFinancialInstitutionIdentification6 `xml:"CdtrAgt,omitempty"`
 	CreditorAgentAccount      *CashAccount38                                `xml:"CdtrAgtAcct,omitempty"`
-	Creditor                  *Party40Choice                                `xml:"Cdtr,omitempty"`
+	Creditor                  *Party40                                `xml:"Cdtr,omitempty"`
 	CreditorAccount           *CashAccount38                                `xml:"CdtrAcct,omitempty"`
-	UltimateCreditor          *Party40Choice                                `xml:"UltmtCdtr,omitempty"`
-	Purpose                   *Purpose2Choice                               `xml:"Purp,omitempty"`
+	UltimateCreditor          *Party40                                `xml:"UltmtCdtr,omitempty"`
+	Purpose                   *Purpose2                               `xml:"Purp,omitempty"`
 }
 
 // OriginalTransactionReference31 - Similar to OriginalTransactionReference28 but for different message types
@@ -4993,4 +4990,111 @@ type BusinessApplicationHeaderDocument struct {
 // Validate validates the BusinessApplicationHeaderDocument
 func (b *BusinessApplicationHeaderDocument) Validate() error {
 	return b.AppHdr.Validate()
+}
+
+// pain.013.001.07 types
+
+type Priority2Code string
+
+type PaymentTypeInformation26 struct {
+	InstructionPriority *Priority2Code    `xml:"InstrPrty,omitempty"`
+	ServiceLevel        []ServiceLevel8   `xml:"SvcLvl,omitempty"`
+	LocalInstrument     *LocalInstrument2 `xml:"LclInstrm,omitempty"`
+	CategoryPurpose     *CategoryPurpose1 `xml:"CtgyPurp,omitempty"`
+}
+
+type AmountOrRate1 struct {
+	Amount *ActiveCurrencyAndAmount `xml:"Amt,omitempty"`
+	Rate   *Decimal                 `xml:"Rate,omitempty"`
+}
+
+type PaymentCondition1 struct {
+	AmountModificationAllowed bool                 `xml:"AmtModAllwd"`
+	EarlyPaymentAllowed       bool                 `xml:"EarlyPmtAllwd"`
+	DebitPenalty              *string              `xml:"DelyPnlty,omitempty"`
+	ImmediatePaymentRebate    *AmountOrRate1 `xml:"ImdtPmtRbt,omitempty"`
+	GuaranteedPaymentRequired bool                 `xml:"GrntedPmtReqd"`
+}
+
+type PaymentIdentification6 struct {
+	InstructionID *string `xml:"InstrId,omitempty"`
+	EndToEndID    string  `xml:"EndToEndId"`
+	UETR          *string `xml:"UETR,omitempty"`
+}
+
+type NameAndAddress16 struct {
+	Name    string         `xml:"Nm"`
+	Address PostalAddress24 `xml:"Adr"`
+}
+
+type ChequeDeliveryMethod1 struct {
+	Code        *string `xml:"Cd,omitempty"`
+	Proprietary *string `xml:"Prtry,omitempty"`
+}
+
+type Cheque11 struct {
+	ChequeType           *string                      `xml:"ChqTp,omitempty"`
+	ChequeNumber         *string                      `xml:"ChqNb,omitempty"`
+	ChequeFrom           *NameAndAddress16             `xml:"ChqFr,omitempty"`
+	DeliveryMethod       *ChequeDeliveryMethod1 `xml:"DlvryMtd,omitempty"`
+	DeliverTo            *NameAndAddress16             `xml:"DlvrTo,omitempty"`
+	InstructionPriority  *string                      `xml:"InstrPrty,omitempty"`
+	ChequeMaturityDate   *string                      `xml:"ChqMtrtyDt,omitempty"`
+	FormsCode            *string                      `xml:"FrmsCd,omitempty"`
+	MemoField            []string                     `xml:"MemoFld,omitempty"`
+	RegionalClearingZone *string                      `xml:"RgnlClrZone,omitempty"`
+	PrintLocation        *string                      `xml:"PrtLctn,omitempty"`
+	Signature            []string                     `xml:"Sgntr,omitempty"`
+}
+
+type DocumentType1 struct {
+	Code        *string                 `xml:"Cd,omitempty"`
+	Proprietary *GenericIdentification1 `xml:"Prtry,omitempty"`
+}
+
+type DocumentFormat1 struct {
+	Code        *string                 `xml:"Cd,omitempty"`
+	Proprietary *GenericIdentification1 `xml:"Prtry,omitempty"`
+}
+
+type PartyAndSignature3 struct {
+	Party     PartyIdentification135 `xml:"Pty"`
+	Signature []byte                 `xml:"Sgntr,innerxml"`
+}
+
+type Document12 struct {
+	Type             DocumentType1    `xml:"Tp"`
+	ID               string                 `xml:"Id"`
+	IssueDate        DateAndDateTime2 `xml:"IsseDt"`
+	Name             *string                `xml:"Nm,omitempty"`
+	LanguageCode     *string                `xml:"LangCd,omitempty"`
+	Format           DocumentFormat1  `xml:"Frmt"`
+	FileName         *string                `xml:"FileNm,omitempty"`
+	DigitalSignature *PartyAndSignature3    `xml:"DgtlSgntr,omitempty"`
+	Enclosure        []byte                 `xml:"Nclsr"`
+}
+
+type CreditTransferTransaction35 struct {
+	PaymentID                    PaymentIdentification6                        `xml:"PmtId"`
+	PaymentTypeInfo              *PaymentTypeInformation26                     `xml:"PmtTpInf,omitempty"`
+	PaymentCondition             *PaymentCondition1                            `xml:"PmtCond,omitempty"`
+	Amount                       AmountType4                             `xml:"Amt"`
+	ChargeBearer                 ChargeBearerType1Code                         `xml:"ChrgBr"`
+	ChequeInstruction            *Cheque11                                     `xml:"ChqInstr,omitempty"`
+	UltimateDebtor               *PartyIdentification135                       `xml:"UltmtDbtr,omitempty"`
+	IntermediaryAgent1           *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt1,omitempty"`
+	IntermediaryAgent2           *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt2,omitempty"`
+	IntermediaryAgent3           *BranchAndFinancialInstitutionIdentification6 `xml:"IntrmyAgt3,omitempty"`
+	CreditorAgent                BranchAndFinancialInstitutionIdentification6  `xml:"CdtrAgt"`
+	Creditor                     PartyIdentification135                        `xml:"Cdtr"`
+	CreditorAccount              *CashAccount38                                `xml:"CdtrAcct,omitempty"`
+	UltimateCreditor             *PartyIdentification135                       `xml:"UltmtCdtr,omitempty"`
+	InstructionsForCreditorAgent []InstructionForCreditorAgent1                `xml:"InstrForCdtrAgt,omitempty"`
+	Purpose                      *Purpose2                               `xml:"Purp,omitempty"`
+	RegulatoryReporting          []RegulatoryReporting3                        `xml:"RgltryRptg,omitempty"`
+	Tax                          *TaxInfo8                                     `xml:"Tax,omitempty"`
+	RelatedRemittanceInfo        []RemittanceLocation7                         `xml:"RltdRmtInf,omitempty"`
+	RemittanceInfo               *RemittanceInfo16                             `xml:"RmtInf,omitempty"`
+	EnclosedFile                 []Document12                                  `xml:"NclsdFile,omitempty"`
+	SupplementaryData            []SupplementaryData1                          `xml:"SplmtryData,omitempty"`
 }
