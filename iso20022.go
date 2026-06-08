@@ -1871,7 +1871,7 @@ type GroupHeader81 struct {
 	CreationDateTime      *time.Time           `xml:"CreDtTm,omitempty"`
 	MessageRecipient      *PartyIdentification `xml:"MsgRcpt,omitempty"`
 	MessagePagination     *Pagination1         `xml:"MsgPgntn,omitempty"`
-	OriginalBusinessQuery *string              `xml:"OrgnlBizQry,omitempty"`
+	OriginalBusinessQuery *OriginalBusinessQuery1 `xml:"OrgnlBizQry,omitempty"`
 	AdditionalInformation *string              `xml:"AddtlInf,omitempty"`
 }
 
